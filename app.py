@@ -23,7 +23,7 @@ st.set_page_config(
 # =============================================================================
 # INICIALIZACE FIREBASE
 # =============================================================================
-FIREBASE_WEB_API_KEY = "AIzaSyDi045x3p6Z8YmlF9Hms515WvoIkXqCfSU"  # <-- Zkopíruj z Firebase Project Settings
+FIREBASE_WEB_API_KEY = st.secrets["FIREBASE_WEB_API_KEY"]
 
 @st.cache_resource
 def init_firestore():
