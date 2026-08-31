@@ -1,0 +1,51 @@
+{
+  "lessons": {
+    "lekce1": {
+      "title": "1. Základy & Suroviny",
+      "completed": true,
+      "score": 0
+    },
+    "lekce2": {
+      "title": "2. Voda a její úprava",
+      "completed": false,
+      "score": 0
+    },
+    "lekce3": {
+      "title": "3. Rmutování & Enzymy",
+      "completed": false,
+      "score": 0
+    },
+    "lekce4": {
+      "title": "4. Scezování & Recirkulace",
+      "completed": false,
+      "score": 0
+    },
+    "lekce5": {
+      "title": "5. Kvašení & Diacetyl",
+      "completed": false,
+      "score": 0
+    },
+    "lekce6": {
+      "title": "6. Ležákování & KEG CO₂",
+      "completed": false,
+      "score": 0
+    },
+    "lekce7": {
+      "title": "7. Senzorika & Pivní vady",
+      "completed": false,
+      "score": 0
+    },
+    "lekce8": {
+      "title": "8. Receptury & Tvorba ležáku",
+      "completed": false,
+      "score": 0
+    },
+    "lekce9_10": {
+      "title": "9 & 10. Checklist & Várka",
+      "completed": false,
+      "score": 0
+    }
+  },
+  "batch_logs": [],
+  "recipes": []
+}
