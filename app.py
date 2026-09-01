@@ -1544,32 +1544,87 @@ elif selected_view == "🧮 Sládkova pokročilá kalkulačka":
         st.info(f"💡 **Instrukce pro vystírku:** Přidej **{ml_kyseliny:.1f} ml** 80% kyseliny mléčné do {w_vol:.1f} l vystírací vody před nasypáním sladu.")
 
 # =============================================================================
-# ČASOVAČ VARNÉHO DNE
+# ČASOVAČ VARNÉHO DNE (LIVE TIMER S DEKOKCÍ)
 # =============================================================================
 elif selected_view == "⏱️ Časovač varného dne":
     st.header("⏱️ Asistent varného dne (Live Timer)")
-    st.markdown("Časovač fází rmutování a chmelovaru se zvukovou a vizuální notifikací.")
+    st.markdown("Přesný časovač všech fází rmutování, dekokčních varů a chmelovaru se zvukovým signálem.")
     st.divider()
 
-    t_mod = st.radio("Režim časovače:", ["🔥 Rmutovací křivka", "🌿 Chmelovar"], horizontal=True)
+    t_mod = st.radio(
+        "Režim časovače:",
+        ["🔥 Infuzní rmutování", "🥣 Dekokční rmutování (1–3 rmuty)", "🌿 Chmelovar & Whirlpool"],
+        horizontal=True
+    )
 
-    if t_mod == "🔥 Rmutovací křivka":
+    phases = []
+
+    # 1. INFUZNÍ REŽIM
+    if t_mod == "🔥 Infuzní rmutování":
         c1, c2, c3 = st.columns(3)
-        with c1: p_b = st.number_input("Bílkovinná pauza 52 °C (min)", 0, 60, 15, 5)
-        with c2: p_m = st.number_input("Maltózová pauza 63 °C (min)", 10, 90, 40, 5)
-        with c3: p_s = st.number_input("Sacharizační pauza 72 °C (min)", 10, 60, 20, 5)
-        
-        phases = []
-        if p_b > 0: phases.append({"nazev": "Bílkovinná pauza (52 °C)", "cas": p_b})
-        phases.append({"nazev": "Maltózová pauza (63 °C)", "cas": p_m})
-        phases.append({"nazev": "Sacharizační pauza (72 °C)", "cas": p_s})
-        phases.append({"nazev": "Mash-out (78 °C)", "cas": 5})
+        with c1: p_b = st.number_input("Bílkovinná pauza 52 °C (min)", 0, 60, 15, 5, key="t_inf_b")
+        with c2: p_m = st.number_input("Maltózová pauza 63 °C (min)", 10, 90, 40, 5, key="t_inf_m")
+        with c3: p_s = st.number_input("Sacharizační pauza 72 °C (min)", 10, 60, 20, 5, key="t_inf_s")
+
+        if p_b > 0:
+            phases.append({"nazev": "Bílkovinná pauza (52 °C)", "cas": p_b, "detail": "Celá várka v klidu."})
+        phases.append({"nazev": "Maltózová pauza (63 °C)", "cas": p_m, "detail": "Tvorba zkvasitelné maltózy (sušší tělo, alkohol)."})
+        phases.append({"nazev": "Sacharizační pauza (72 °C)", "cas": p_s, "detail": "Tvorba dextrinů a stabilizace pěny."})
+        phases.append({"nazev": "Odrmutování / Mash-out (78 °C)", "cas": 5, "detail": "Zastavení enzymů před scezováním."})
+
+    # 2. DEKOKČNÍ REŽIM (1, 2 nebo 3 RMUTY)
+    elif t_mod == "🥣 Dekokční rmutování (1–3 rmuty)":
+        typ_dekokce = st.selectbox(
+            "Zvol počet rmutů:",
+            ["Dvourmutová dekokce (Klasika)", "Jednormutová dekokce (Rychlý ležák)", "Třírmutová dekokce (Historická)"]
+        )
+
+        if typ_dekokce == "Jednormutová dekokce (Rychlý ležák)":
+            phases = [
+                {"nazev": "Vystření a pauza na 52 °C", "cas": 15, "detail": "Celá várka v hlavní kádi."},
+                {"nazev": "Ohřev na 63 °C & Odběr 1/3 rmutu", "cas": 10, "detail": "Hustý podíl do rmutovacího kotle."},
+                {"nazev": "Zcukření 1. rmutu (72 °C)", "cas": 15, "detail": "Rmutovací kotel na 72 °C."},
+                {"nazev": "🔥 Var rmutu (100 °C)", "cas": 15, "detail": "Intenzivní var rmutu, tvorba melanoidinů."},
+                {"nazev": "Vyrovnání na 72 °C (Cukření díla)", "cas": 20, "detail": "Návrat rmutu do kádě, finální zcukření."},
+                {"nazev": "Odrmutování / Mash-out (78 °C)", "cas": 5, "detail": "Ohřev celé kádě před scezením."}
+            ]
+
+        elif typ_dekokce == "Dvourmutová dekokce (Klasika)":
+            phases = [
+                {"nazev": "Vystření & Bílkovinná pauza (37–52 °C)", "cas": 15, "detail": "Celá várka v klidu v hlavní kádi."},
+                {"nazev": "Odběr 1. rmutu (1/3) & Pauza 63 °C", "cas": 15, "detail": "Rmutovací kotel: ohřev na 63 °C."},
+                {"nazev": "Zcukření 1. rmutu (72 °C)", "cas": 15, "detail": "Rmutovací kotel: pauza na 72 °C."},
+                {"nazev": "🔥 Var 1. rmutu (100 °C)", "cas": 20, "detail": "Povaření 1/3 hustého díla."},
+                {"nazev": "1. Vyrovnání na 63 °C", "cas": 15, "detail": "Vlití vroucího rmutu do kádě -> skok na 63 °C."},
+                {"nazev": "Odběr 2. rmutu (1/3) & Cukření 72 °C", "cas": 10, "detail": "Druhý hustý podíl do rmutovacího kotle."},
+                {"nazev": "🔥 Var 2. rmutu (100 °C)", "cas": 15, "detail": "Povaření 2. rmutu."},
+                {"nazev": "2. Vyrovnání na 72 °C (Sacharizace)", "cas": 20, "detail": "Návrat rmutu do kádě -> skok na 72 °C."},
+                {"nazev": "Odrmutování / Mash-out (78 °C)", "cas": 5, "detail": "Finální ohřev na 78 °C a odpočinek na lůžku."}
+            ]
+
+        else:  # Třírmutová dekokce
+            phases = [
+                {"nazev": "Studené vystření (35 °C)", "cas": 15, "detail": "Míchání sladu ve vlažné vodě."},
+                {"nazev": "1. rmut: Zcukření 63–72 °C", "cas": 20, "detail": "Ohřev 1/3 rmutu v kotli."},
+                {"nazev": "🔥 Var 1. rmutu (100 °C)", "cas": 25, "detail": "Dlouhé povaření prvního dílu."},
+                {"nazev": "1. Vyrovnání na 52 °C (Bílkoviny)", "cas": 15, "detail": "Návrat do kádě -> posun na 52 °C."},
+                {"nazev": "2. rmut: Zcukření 63–72 °C", "cas": 15, "detail": "Odběr druhé třetiny sladu."},
+                {"nazev": "🔥 Var 2. rmutu (100 °C)", "cas": 20, "detail": "Povaření 2. rmutu."},
+                {"nazev": "2. Vyrovnání na 63 °C (Maltóza)", "cas": 15, "detail": "Návrat do kádě -> posun na 63 °C."},
+                {"nazev": "3. rmut: Cukření na 72 °C", "cas": 10, "detail": "Odběr třetího dílu."},
+                {"nazev": "🔥 Var 3. rmutu (100 °C)", "cas": 15, "detail": "Povaření 3. rmutu."},
+                {"nazev": "3. Vyrovnání na 72 °C (Cukření)", "cas": 15, "detail": "Finální spojení várky na 72 °C."},
+                {"nazev": "Odrmutování / Mash-out (78 °C)", "cas": 5, "detail": "Finální teplota pro scezení."}
+            ]
+
+    # 3. CHMELOVAR & WHIRLPOOL
     else:
         phases = [
-            {"nazev": "Náběh varu & lom", "cas": 15},
-            {"nazev": "1. Chmelení (Hořkost)", "cas": 50},
-            {"nazev": "2. Chmelení (Chuť)", "cas": 20},
-            {"nazev": "3. Chmelení & Whirlpool", "cas": 5}
+            {"nazev": "Náběh varu & Vznik lomu", "cas": 15, "detail": "Sbírání deky a odpar nežádoucích látek."},
+            {"nazev": "1. Chmelení (Hořkost)", "cas": 50, "detail": "Vaření s hořkým chmelem (např. Premiant/ŽPČ)."},
+            {"nazev": "2. Chmelení (Chuť)", "cas": 20, "detail": "Přídavek aromatického chmele."},
+            {"nazev": "3. Chmelení (Aroma)", "cas": 5, "detail": "Poslední minuty varu."},
+            {"nazev": "Whirlpool & Usazení kalů (80–85 °C)", "cas": 15, "detail": "Krouživý pohyb a tvorba chmelového kužele."}
         ]
 
     total_sec = sum(p["cas"] for p in phases) * 60
@@ -1617,9 +1672,10 @@ elif selected_view == "⏱️ Časovač varného dne":
             else:
                 curr_p_idx = len(phases_list) - 1
 
+        # Zvuková a vizuální notifikace při přechodu do nové fáze
         if st.session_state.timer_running and curr_p_idx != st.session_state.last_alert_phase:
             play_sound_alert()
-            st.toast(f"🔔 Přechod na fázi: {phases_list[curr_p_idx]['nazev']}!", icon="🍺")
+            st.toast(f"🔔 Zahájena fáze: {phases_list[curr_p_idx]['nazev']}!", icon="🍺")
             st.session_state.last_alert_phase = curr_p_idx
 
         m_el, s_el = divmod(int(el), 60)
@@ -1627,15 +1683,21 @@ elif selected_view == "⏱️ Časovač varného dne":
 
         disp1, disp2, disp3 = st.columns(3)
         disp1.metric("Uplynulo", f"{m_el:02d}:{s_el:02d}")
-        disp2.metric("Zbývá", f"{m_rem:02d}:{s_rem:02d}")
+        disp2.metric("Zbývá z celku", f"{m_rem:02d}:{s_rem:02d}")
         p_ratio = el / total_duration if total_duration > 0 else 0
-        disp3.metric("Postup", f"{int(p_ratio * 100)} %")
+        disp3.metric("Celkový postup", f"{int(p_ratio * 100)} %")
         st.progress(p_ratio)
 
         if rem > 0:
-            st.success(f"📍 Aktuálně probíhá: **{phases_list[curr_p_idx]['nazev']}** ({phases_list[curr_p_idx]['cas']} min)")
+            akt = phases_list[curr_p_idx]
+            st.success(f"📍 **Aktuální krok ({curr_p_idx + 1}/{len(phases_list)}):** **{akt['nazev']}** ({akt['cas']} min)\n\n_{akt.get('detail', '')}_")
+            
+            # Náhled dalšího kroku pro přípravu sládka
+            if curr_p_idx + 1 < len(phases_list):
+                dalsi = phases_list[curr_p_idx + 1]
+                st.info(f"⏳ **Připrav se na další krok:** {dalsi['nazev']} ({dalsi['cas']} min) – _{dalsi.get('detail', '')}_")
         else:
             st.balloons()
-            st.success("🎉 Fáze dokončena!")
+            st.success("🎉 **Všechny naplánované fáze byly úspěšně dokončeny!**")
 
     render_timer_ui(phases, total_sec, cum_limits)
