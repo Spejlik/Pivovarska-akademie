@@ -443,22 +443,22 @@ elif "2. Voda a její úprava" in selected_view:
 # LEKCE 3: RMUTOVÁNÍ & ENZYMY
 # ==========================================
 elif "3. Rmutování & Enzymy" in selected_view:
-    # Dynamický nadpis podle stylu
+    # Dynamický nadpis podle stylu (odsazeno o 4 mezery)
     if "Pilsner" in zvoleny_styl:
-    st.header("🔥 Lekce 3: Dekokční rmutování a enzymatika")
+        st.header("🔥 Lekce 3: Dekokční rmutování a enzymatika")
     elif "IPA" in zvoleny_styl:
-    st.header("🔥 Lekce 3: Infuzní rmutování a enzymatika")
+        st.header("🔥 Lekce 3: Infuzní rmutování a enzymatika")
     elif "Weizen" in zvoleny_styl:
-    st.header("🔥 Lekce 3: Rmutování pšeničného piva a enzymatika")
+        st.header("🔥 Lekce 3: Rmutování pšeničného piva a enzymatika")
     else:
-    st.header("🔥 Lekce 3: Rmutovací profily pro tmavá piva a enzymatika")
+        st.header("🔥 Lekce 3: Rmutovací profily pro tmavá piva a enzymatika")
 
     st.markdown("""
     Rmutování je enzymatická přeměna sladových škrobů:
     * **Beta-amyláza (62–65 °C):** Tvorba maltózy $\\rightarrow$ vyšší prokvašení a sušší profil.
     * **Alfa-amyláza (70–75 °C):** Tvorba nezkvasitelných dextrinů $\\rightarrow$ plnost těla a sladovost.
     * **Odrmutování (78 °C):** Zastavení enzymů a snížení viskozity pro scezování.
-    """)
+    """))
 
     st.divider()
 
