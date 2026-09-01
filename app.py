@@ -1383,8 +1383,20 @@ elif selected_view == "🧮 Sládkova pokročilá kalkulačka":
         with col_k1:
             slad_kg = st.number_input("Hmotnost sypání sladu (kg)", value=4.5, step=0.1)
             cilovy_objem = st.number_input("Cílový objem mladiny do kvašení (l)", value=20.0, step=1.0)
-            pomer_vody = st.slider("Rmutovací poměr (l vody / 1 kg sladu)", 2.5, 4.5, 3.5, 0.1)
-            ucinnost_v = st.slider("Účinnost varny (%)", 60, 85, 75, 1)
+            pomer_vody = st.slider(
+                "Rmutovací poměr (l vody / 1 kg sladu)", 
+                2.5, 4.5, 3.5, 0.1,
+                help="Poměr udává, kolik litrů vody použijete na 1 kg sladu pro hlavní nálev (vystření).\n\n"
+                     "• 2.5–3.0 l/kg: Hustý rmut (klasická dekokce, enzymy jsou chráněnější).\n"
+                     "• 3.2–3.8 l/kg: Standard pro moderní infuzi a jednoplášťové varny (snadná cirkulace čerpadlem).\n"
+                     "• 4.0+ l/kg: Velmi řídký rmut."
+            )
+            ucinnost_v = st.slider(
+                "Účinnost varny (%)", 
+                60, 85, 75, 1,
+                help="Celková efektivita přechodu cukrů ze sladu do mladiny. U běžných domácích varen se pohybuje mezi 70–78 %."
+            )
+
         with col_k2:
             odpar_h = st.number_input("Odpar při varu (l/hod)", value=3.0, step=0.5)
             cas_varu = st.number_input("Délka varu (min)", value=90, step=15)
@@ -1399,7 +1411,7 @@ elif selected_view == "🧮 Sládkova pokročilá kalkulačka":
         pts = (slad_kg * 308.0 * (ucinnost_v / 100.0)) / cilovy_objem
         sg_val = 1.000 + (pts / 1000.0)
         plato_val = pts / 4.0
-
+        
         st.markdown("---")
         c_r1, c_r2, c_r3, c_r4 = st.columns(4)
         c_r1.metric("Hlavní nálev", f"{rmut_voda:.1f} l")
