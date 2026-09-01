@@ -253,21 +253,7 @@ menu_items = [
     "🧮 Sládkova pokročilá kalkulačka",
     "⏱️ Časovač varného dne"
 ]
-
 selected_view = st.sidebar.radio("Přejít na:", menu_items)
-
-st.sidebar.divider()
-st.sidebar.subheader("🍺 Nastavení pivního stylu")
-zvoleny_styl = st.sidebar.selectbox(
-    "Styl pro celý kurz:",
-    [
-        "Český světlý ležák (Pilsner)",
-        "American IPA / APA",
-        "Tmavý ležák / Stout",
-        "Německé pšeničné (Weizen)"
-    ]
-)
-
 # =============================================================================
 # LEKCE 1: ZÁKLADY & SUROVINY
 # =============================================================================
@@ -281,13 +267,13 @@ if "1. Základy & Suroviny" in selected_view:
             "slad": "**Plzeňský slad (95–100 %)**. Šetrně sušený ječmenný slad s vysokou enzymatickou silou. Možno doplnit 3–5 % Carapils pro stabilitu pěny.",
             "chmel": "**Žatecký poloraný červeňák (Saaz)** – jemný aromatický chmel dodávající bylinné až kořenité aroma. Pro hořkost se používá např. Premiant či Sládek.",
             "voda": "**Měkká voda** s nízkým obsahem minerálů (vápník 30–50 ppm, nízké sírany i chloridy).",
-            "kvasinky": "**Spodní kvašení** (*Saccharomyces pastorianus*, např. Saflager W-34/70). Kvasí při 9–12 °C.",
+            "kvasinky": "**Spodní kvašení** (*Saccharomyces pastorianus*, např. pivovarské husté kvasnice / W-34/70). Kvasí při 7–11 °C.",
             "tip": "U ležáku je klíčová čistota surovin a vyváženost – jakákoliv chyba v chuti se v jemném profilu snadno projeví."
         },
         "American IPA / APA": {
             "slad": "**Pale Ale slad (85–90 %)** jako základ, doplněný o karamelový slad (Caramalt 5–10 %) a pšeničný slad pro pěnu.",
             "chmel": "**Americké aromatické odrůdy** (Citra, Mosaic, Simcoe, Amarillo) s vysokým obsahem silic a alfa-kyselin pro výrazné citrusové a tropické tóny.",
-            "voda": "**Tvrdší síranová voda** (vysoký poměr $SO_4^{2-} : Cl^-$) pro zvýraznění suchosti a řízné hořkosti.",
+            "voda": "**Tvrdší síranová voda** (vysoký poměr SO₄²⁻ : Cl⁻) pro zvýraznění suchosti a řízné hořkosti.",
             "kvasinky": "**Svrchní kvašení** (*Saccharomyces cerevisiae*, např. SafAle US-05). Čistý profil kvasinek nechává vyniknout chmel.",
             "tip": "Klíčem je pozdní chmelení (whirlpool) a studené chmelení (dry hopping) v závěru kvašení."
         },
@@ -296,7 +282,7 @@ if "1. Základy & Suroviny" in selected_view:
             "chmel": "**Vyvážené chmelení**: U ležáku kořenité české chmely, u stoutu spíše neutrální hořké odrůdy (Magnum, Target).",
             "voda": "**Vyšší podíl chloridů** pro plnost a krémovitost. Voda musí mít dostatečnou alkalitu proti překyselení rmutu.",
             "kvasinky": "Spodní kvasinky (u tmavého ležáku) nebo svrchní anglické kmeny (např. S-04 pro Stout).",
-            "tip": "Tmavé a pražené slady přidávej až v závěru rmutování, pokud se chceš vyhnout přílišné kyselosti a drsné trpkosti."
+            "tip": "Tmavé a pražené slady přidávej až v závěru rmutování nebo na vyslazování, pokud se chceš vyhnout přílišné kyselosti a drsné trpkosti."
         },
         "Německé pšeničné (Weizen)": {
             "slad": "**Minimálně 50 % pšeničného sladu** doplněného Plzeňským sladem.",
