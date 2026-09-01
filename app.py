@@ -340,21 +340,11 @@ if selected_view == "📘 1. Základy & Suroviny":
 # ==========================================
 elif "2. Voda a její úprava" in selected_view:
     st.header("🚰 Lekce 2: Voda a její chemická úprava")
+    st.info(f"🎯 Zvolený pivní styl pro úpravu vody: **{zvoleny_styl}**")
     
     st.markdown("Voda tvoří přes 90 % piva. Každý pivní styl vyžaduje odlišné minerální složení pro zvýraznění sladu nebo chmele.")
     
-    # Výběr pivního stylu přímo v lekci
-    styl_vody = st.selectbox(
-        "🍺 Zvol pivní styl pro přizpůsobení parametrů vody:",
-        [
-            "Český světlý ležák (Pilsner)",
-            "American IPA / APA",
-            "Tmavý ležák / Stout / Porter",
-            "Německé pšeničné (Weizen)"
-        ]
-    )
-    
-    # Databáze profilů vody
+    # Databáze profilů vody navázaná na globální výběr (zvoleny_styl)
     profily = {
         "Český světlý ležák (Pilsner)": {
             "popis": "Extrémně měkká voda s minimem minerálů. Cílem je čistá, neulpívající a jemná hořkost s hladkým tělem.",
@@ -364,7 +354,10 @@ elif "2. Voda a její úprava" in selected_view:
             "cl": "30–50 ppm",
             "pomer": "1:1 až 1:1.2 (vyrovnaný / lehce pro chloridy)",
             "ph": "5.2 – 5.5",
-            "tip": "Vyhni se vysokým síranům (sádrovci), jinak bude hořkost Žateckého poloraného červeňáku drsná a trpká."
+            "tip": "Vyhni se vysokým síranům (sádrovci), jinak bude hořkost Žateckého poloraného červeňáku drsná a trpká.",
+            "q2_q": "Proč se u plzeňského ležáku vyhýbáme vysokým dávkám sádrovce (síranů)?",
+            "q2_opts": ["Protože by hořkost jemného žateckého chmele byla drsná a trpká", "Protože by pivo mělo málo alkoholu", "Protože by pivo nešlo stočit"],
+            "q2_ans": "Protože by hořkost jemného žateckého chmele byla drsná a trpká"
         },
         "American IPA / APA": {
             "popis": "Tvrdší síranová voda. Vysoký obsah síranů zásadně podpoří suchost a ostrost moderní chmelové hořkosti.",
@@ -374,9 +367,12 @@ elif "2. Voda a její úprava" in selected_view:
             "cl": "50–75 ppm",
             "pomer": "2:1 až 4:1 (výrazně pro sírany)",
             "ph": "5.2 – 5.4",
-            "tip": "Přidává se síran vápenatý (sádrovec / CaSO4) pro vysušení profilu a vytažení pryskyřičných tónů chmele."
+            "tip": "Přidává se síran vápenatý (sádrovec / CaSO4) pro vysušení profilu a vytažení pryskyřičných a citrusových tónů chmele.",
+            "q2_q": "Který iont se přidává (ve formě sádrovce) pro suchou a ostrou hořkost u IPA?",
+            "q2_opts": ["Síran (SO₄²⁻)", "Chlorid (Cl⁻)", "Sodík (Na⁺)"],
+            "q2_ans": "Síran (SO₄²⁻)"
         },
-        "Tmavý ležák / Stout / Porter": {
+        "Tmavý ležák / Stout": {
             "popis": "Voda s vyšším podílem chloridů pro podporu plnosti a zaoblení pražených tónů. Tmavé slady přirozeně sráží pH.",
             "ca": "50–80 ppm",
             "mg": "10–20 ppm",
@@ -384,7 +380,10 @@ elif "2. Voda a její úprava" in selected_view:
             "cl": "100–150 ppm",
             "pomer": "1:2 (výrazně pro chloridy)",
             "ph": "5.4 – 5.6",
-            "tip": "Pražené a karamelové slady jsou kyselé. Pozor na přílišný pokles pH pod 5.2, často není potřeba žádná kyselina."
+            "tip": "Pražené a karamelové slady jsou kyselé. Pozor na přílišný pokles pH pod 5.2, často není potřeba žádná kyselina.",
+            "q2_q": "Který poměr minerálů preferujeme u tmavých piv pro plné a jemné tělo?",
+            "q2_opts": ["Převahu chloridů (Cl⁻)", "Extrémní převahu síranů (SO₄²⁻)", "Vodu bez jakýchkoliv minerálů"],
+            "q2_ans": "Převahu chloridů (Cl⁻)"
         },
         "Německé pšeničné (Weizen)": {
             "popis": "Středně měkká, vyvážená voda. V popředí stojí esterový profil kvasinek (banány a hřebíček), nikoliv minerály.",
@@ -394,15 +393,19 @@ elif "2. Voda a její úprava" in selected_view:
             "cl": "40–60 ppm",
             "pomer": "1:1 (vyrovnaný poměr)",
             "ph": "5.2 – 5.4",
-            "tip": "Pšeničný slad nemá pluchy, takže riziko vyluhování drsných tříslovin při vyšším pH je menší, ale enzymy vyžadují stabilitu."
+            "tip": "Pšeničný slad nemá pluchy, takže riziko vyluhování drsných tříslovin při vyšším pH je menší, ale enzymy vyžadují stabilitu.",
+            "q2_q": "Jaký poměr síranů a chloridů je ideální pro pšeničné pivo?",
+            "q2_opts": ["Vyvážený poměr cca 1:1", "10:1 pro sírany", "1:5 pro chloridy"],
+            "q2_ans": "Vyvážený poměr cca 1:1"
         }
     }
     
-    profil = profily[styl_vody]
+    # Automatické načtení podle globální volby v sidebaru
+    profil = profily[zvoleny_styl]
     
-    st.info(f"💡 **Profil pro {styl_vody}:** {profil['popis']}")
+    st.info(f"💡 **Profil pro {zvoleny_styl}:** {profil['popis']}")
     
-    # Zobrazení cílových parametrů
+    # Cílové parametry
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Vápník (Ca²⁺)", profil["ca"])
     col2.metric("Síran (SO₄²⁻)", profil["so4"])
@@ -414,30 +417,28 @@ elif "2. Voda a její úprava" in selected_view:
     
     st.divider()
     
-    # Interaktivní mini-kvíz
-    st.subheader("📝 Rychlý test znalostí")
+    # Test znalostí přizpůsobený stylu
+    st.subheader(f"📝 Kvíz: Voda pro {zvoleny_styl}")
     with st.form("quiz_voda"):
         q1 = st.radio(
-            "Jaké je ideální pH rmutu pro optimální práci enzymů?",
+            "Jaké je ideální cílové pH rmutu pro optimální práci enzymů?",
             ["6.2 – 6.8", "5.2 – 5.5", "4.0 – 4.5"]
         )
-        q2 = st.radio(
-            "Který iont se přidává (např. ve formě sádrovce), pokud chceme podpořit suchou a ostrou chmelovou hořkost u IPA?",
-            ["Chlorid (Cl⁻)", "Síran (SO₄²⁻)", "Sodík (Na⁺)"]
-        )
+        q2 = st.radio(profil["q2_q"], profil["q2_opts"])
         submit_voda = st.form_submit_button("Vyhodnotit odpovědi")
         
         if submit_voda:
             body = 0
             if q1 == "5.2 – 5.5":
                 body += 1
-            if q2 == "Síran (SO₄²⁻)":
+            if q2 == profil["q2_ans"]:
                 body += 1
                 
             if body == 2:
-                st.success(f"Výborně! {body}/2 správně 🎉")
+                st.success(f"Výborně! 2/2 správně pro styl {zvoleny_styl} 🎉")
             else:
-                st.warning(f"Máš {body}/2 správně. Prohlédni si teorii výše a zkus to znovu.")
+                st.warning(f"Máš {body}/2 správně. Prohlédni si doporučení výše a zkus to znovu.")
+                
 # =============================================================================
 # LEKCE 3: RMUTOVÁNÍ & ENZYMY
 # =============================================================================
