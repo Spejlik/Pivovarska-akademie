@@ -278,93 +278,106 @@ if selected_view == "📘 1. Základy & Suroviny":
 # ==========================================
 # LEKCE 2: VODA A JEJÍ ÚPRAVA
 # ==========================================
-elif selected_view == "🚰 Lekce 2: Voda a její úprava":
-    st.header("Lekce 2: Voda a její chemická úprava podle pivního stylu")
+elif "2. Voda a její úprava" in selected_view:
+    st.header("🚰 Lekce 2: Voda a její chemická úprava")
     
-    # Výběr pivního stylu
-    styl = st.selectbox(
-        "Vyber pivní styl pro zobrazení ideálního profilu vody:",
-        ["Český světlý ležák (Pilsner)", "American IPA / APA", "Stout / Porter", "Pšeničné pivo (Weizen)"]
+    st.markdown("Voda tvoří přes 90 % piva. Každý pivní styl vyžaduje odlišné minerální složení pro zvýraznění sladu nebo chmele.")
+    
+    # Výběr pivního stylu přímo v lekci
+    styl_vody = st.selectbox(
+        "🍺 Zvol pivní styl pro přizpůsobení parametrů vody:",
+        [
+            "Český světlý ležák (Pilsner)",
+            "American IPA / APA",
+            "Tmavý ležák / Stout / Porter",
+            "Německé pšeničné (Weizen)"
+        ]
     )
     
-    # Profily a doporučení dle stylu
+    # Databáze profilů vody
     profily = {
         "Český světlý ležák (Pilsner)": {
-            "popis": "Extrémně měkká voda s minimem minerálů. Cílem je jemná, neulpívající hořkost a hladký sladový profil.",
-            "ca": "30–50",
-            "mg": "5–10",
-            "so4": "20–40",
-            "cl": "30–50",
-            "pomer": "1:1 až 1:1.2 (vyrovnaný nebo mírně pro chloridy)",
-            "ph": "5.2–5.5"
+            "popis": "Extrémně měkká voda s minimem minerálů. Cílem je čistá, neulpívající a jemná hořkost s hladkým tělem.",
+            "ca": "30–50 ppm",
+            "mg": "5–10 ppm",
+            "so4": "20–40 ppm",
+            "cl": "30–50 ppm",
+            "pomer": "1:1 až 1:1.2 (vyrovnaný / lehce pro chloridy)",
+            "ph": "5.2 – 5.5",
+            "tip": "Vyhni se vysokým síranům (sádrovci), jinak bude hořkost Žateckého poloraného červeňáku drsná a trpká."
         },
         "American IPA / APA": {
-            "popis": "Tvrdší síranová voda. Vysoký obsah síranů zvýrazňuje chmelové aroma a dodává suchou, říznou a ostrou hořkost.",
-            "ca": "75–120",
-            "mg": "10–20",
-            "so4": "150–300",
-            "cl": "50–75",
+            "popis": "Tvrdší síranová voda. Vysoký obsah síranů zásadně podpoří suchost a ostrost moderní chmelové hořkosti.",
+            "ca": "75–120 ppm",
+            "mg": "10–20 ppm",
+            "so4": "150–300 ppm",
+            "cl": "50–75 ppm",
             "pomer": "2:1 až 4:1 (výrazně pro sírany)",
-            "ph": "5.2–5.4"
+            "ph": "5.2 – 5.4",
+            "tip": "Přidává se síran vápenatý (sádrovec / CaSO4) pro vysušení profilu a vytažení pryskyřičných tónů chmele."
         },
-        "Stout / Porter": {
-            "popis": "Voda s vyšší alkalitou a obsahem chloridů pro podporu plnosti a krémovosti. Tmavé slady přirozeně okyselují rmut.",
-            "ca": "50–80",
-            "mg": "10–20",
-            "so4": "40–60",
-            "cl": "100–150",
-            "pomer": "1:2 (ve prospěch chloridů)",
-            "ph": "5.4–5.6"
+        "Tmavý ležák / Stout / Porter": {
+            "popis": "Voda s vyšším podílem chloridů pro podporu plnosti a zaoblení pražených tónů. Tmavé slady přirozeně sráží pH.",
+            "ca": "50–80 ppm",
+            "mg": "10–20 ppm",
+            "so4": "40–60 ppm",
+            "cl": "100–150 ppm",
+            "pomer": "1:2 (výrazně pro chloridy)",
+            "ph": "5.4 – 5.6",
+            "tip": "Pražené a karamelové slady jsou kyselé. Pozor na přílišný pokles pH pod 5.2, často není potřeba žádná kyselina."
         },
-        "Pšeničné pivo (Weizen)": {
-            "popis": "Měkká až středně tvrdá vyvážená voda. Důraz je kladen na kvasničný profil (banán, hřebíček), nikoliv na minerální hořkost.",
-            "ca": "40–70",
-            "mg": "5–15",
-            "so4": "40–60",
-            "cl": "40–60",
-            "pomer": "1:1 (vyvážený)",
-            "ph": "5.2–5.4"
+        "Německé pšeničné (Weizen)": {
+            "popis": "Středně měkká, vyvážená voda. V popředí stojí esterový profil kvasinek (banány a hřebíček), nikoliv minerály.",
+            "ca": "40–70 ppm",
+            "mg": "5–15 ppm",
+            "so4": "40–60 ppm",
+            "cl": "40–60 ppm",
+            "pomer": "1:1 (vyrovnaný poměr)",
+            "ph": "5.2 – 5.4",
+            "tip": "Pšeničný slad nemá pluchy, takže riziko vyluhování drsných tříslovin při vyšším pH je menší, ale enzymy vyžadují stabilitu."
         }
     }
     
-    vybrany = profily[styl]
-    st.info(f"**Charakteristika pro {styl}:** {vybrany['popis']}")
+    profil = profily[styl_vody]
     
-    # Přehledná tabulka parametrů
+    st.info(f"💡 **Profil pro {styl_vody}:** {profil['popis']}")
+    
+    # Zobrazení cílových parametrů
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Vápník (Ca²⁺)", f"{vybrany['ca']} ppm")
-    col2.metric("Síran (SO₄²⁻)", f"{vybrany['so4']} ppm")
-    col3.metric("Chlorid (Cl⁻)", f"{vybrany['cl']} ppm")
-    col4.metric("Poměr SO₄²⁻ : Cl⁻", vybrany['pomer'])
+    col1.metric("Vápník (Ca²⁺)", profil["ca"])
+    col2.metric("Síran (SO₄²⁻)", profil["so4"])
+    col3.metric("Chlorid (Cl⁻)", profil["cl"])
+    col4.metric("Poměr SO₄²⁻ : Cl⁻", profil["pomer"])
     
-    st.markdown(f"**Cílové pH rmutu při 20 °C:** `{vybrany['ph']}` *(Vyšší pH louhuje z pluch drsné třísloviny, nižší tlumí enzymy).*")
+    st.markdown(f"**Cílové pH rmutu při 20 °C:** `{profil['ph']}`")
+    st.warning(f"📌 **Doporučení sládka:** {profil['tip']}")
     
     st.divider()
     
-    # Mini-kvíz
-    st.subheader("Mini-kvíz: Prověř si znalosti")
-    with st.form("quiz_lekce_2"):
+    # Interaktivní mini-kvíz
+    st.subheader("📝 Rychlý test znalostí")
+    with st.form("quiz_voda"):
         q1 = st.radio(
-            "Jaké je optimální pH rmutu pro správnou enzymatickou přeměnu škrobů?",
+            "Jaké je ideální pH rmutu pro optimální práci enzymů?",
             ["6.2 – 6.8", "5.2 – 5.5", "4.0 – 4.5"]
         )
         q2 = st.radio(
-            "Který iont podporuje suchou a říznou chmelovou hořkost (např. u stylu IPA)?",
+            "Který iont se přidává (např. ve formě sádrovce), pokud chceme podpořit suchou a ostrou chmelovou hořkost u IPA?",
             ["Chlorid (Cl⁻)", "Síran (SO₄²⁻)", "Sodík (Na⁺)"]
         )
-        submit_voda = st.form_submit_button("Odevzdat odpověď")
+        submit_voda = st.form_submit_button("Vyhodnotit odpovědi")
         
         if submit_voda:
-            score = 0
+            body = 0
             if q1 == "5.2 – 5.5":
-                score += 1
+                body += 1
             if q2 == "Síran (SO₄²⁻)":
-                score += 1
+                body += 1
                 
-            if score == 2:
-                st.success(f"Správně! Plný počet bodů: {score}/2 🎉")
+            if body == 2:
+                st.success(f"Výborně! {body}/2 správně 🎉")
             else:
-                st.warning(f"Získal jsi {score}/2 bodů. Zkus to znovu.")
+                st.warning(f"Máš {body}/2 správně. Prohlédni si teorii výše a zkus to znovu.")
 # =============================================================================
 # LEKCE 3: RMUTOVÁNÍ & ENZYMY
 # =============================================================================
