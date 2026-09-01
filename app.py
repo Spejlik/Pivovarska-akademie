@@ -1572,6 +1572,8 @@ elif selected_view == "⏱️ Časovač varného dne":
         horizontal=True
     )
 
+    phases = []  # <--- TENTO ŘÁDEK ZDE MUSÍ BÝT PŘED PODMÍNKAMI IF/ELIF
+
     # 1. INFUZNÍ REŽIM
     if t_mod == "🔥 Infuzní rmutování":
         c1, c2, c3 = st.columns(3)
