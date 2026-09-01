@@ -238,9 +238,69 @@ menu_items = [
 
 selected_view = st.sidebar.radio("Přejít na:", menu_items)
 
+st.sidebar.divider()
+st.sidebar.subheader("🍺 Nastavení pivního stylu")
+zvoleny_styl = st.sidebar.selectbox(
+    "Styl pro celý kurz:",
+    [
+        "Český světlý ležák (Pilsner)",
+        "American IPA / APA",
+        "Tmavý ležák / Stout",
+        "Německé pšeničné (Weizen)"
+    ]
+)
+
 # =============================================================================
 # LEKCE 1: ZÁKLADY & SUROVINY
 # =============================================================================
+if "1. Základy & Suroviny" in selected_view:
+    st.header("📘 Lekce 1: Základy a suroviny")
+    st.info(f"🎯 Zvolený pivní styl: **{zvoleny_styl}**")
+    
+    # Slovník se specifikacemi pro jednotlivé styly
+    suroviny_data = {
+        "Český světlý ležák (Pilsner)": {
+            "slad": "**Plzeňský slad (95–100 %)**. Šetrně sušený ječmenný slad s vysokou enzymatickou silou. Možno doplnit 3–5 % Carapils pro stabilitu pěny.",
+            "chmel": "**Žatecký poloraný červeňák (Saaz)** – jemný aromatický chmel dodávající bylinné až kořenité aroma. Pro hořkost se používá např. Premiant či Sládek.",
+            "voda": "**Měkká voda** s nízkým obsahem minerálů (vápník 30–50 ppm, nízké sírany i chloridy).",
+            "kvasinky": "**Spodní kvašení** (*Saccharomyces pastorianus*, např. Saflager W-34/70). Kvasí při 9–12 °C.",
+            "tip": "U ležáku je klíčová čistota surovin a vyváženost – jakákoliv chyba v chuti se v jemném profilu snadno projeví."
+        },
+        "American IPA / APA": {
+            "slad": "**Pale Ale slad (85–90 %)** jako základ, doplněný o karamelový slad (Caramalt 5–10 %) a pšeničný slad pro pěnu.",
+            "chmel": "**Americké aromatické odrůdy** (Citra, Mosaic, Simcoe, Amarillo) s vysokým obsahem silic a alfa-kyselin pro výrazné citrusové a tropické tóny.",
+            "voda": "**Tvrdší síranová voda** (vysoký poměr $SO_4^{2-} : Cl^-$) pro zvýraznění suchosti a řízné hořkosti.",
+            "kvasinky": "**Svrchní kvašení** (*Saccharomyces cerevisiae*, např. SafAle US-05). Čistý profil kvasinek nechává vyniknout chmel.",
+            "tip": "Klíčem je pozdní chmelení (whirlpool) a studené chmelení (dry hopping) v závěru kvašení."
+        },
+        "Tmavý ležák / Stout": {
+            "slad": "**Kombinace světlých a pražených sladů**: Mnichovský/Pale Ale slad + Carafa Special, pražený ječmen a čokoládový slad pro kávové a čokoládové tóny.",
+            "chmel": "**Vyvážené chmelení**: U ležáku kořenité české chmely, u stoutu spíše neutrální hořké odrůdy (Magnum, Target).",
+            "voda": "**Vyšší podíl chloridů** pro plnost a krémovitost. Voda musí mít dostatečnou alkalitu proti překyselení rmutu.",
+            "kvasinky": "Spodní kvasinky (u tmavého ležáku) nebo svrchní anglické kmeny (např. S-04 pro Stout).",
+            "tip": "Tmavé a pražené slady přidávej až v závěru rmutování, pokud se chceš vyhnout přílišné kyselosti a drsné trpkosti."
+        },
+        "Německé pšeničné (Weizen)": {
+            "slad": "**Minimálně 50 % pšeničného sladu** doplněného Plzeňským sladem.",
+            "chmel": "**Jemné chmelení** (Hallertau Mittelfrüh, Tettnanger) s nízkou hořkostí (10–15 IBU), aby nepřebila esterový profil.",
+            "voda": "**Středně měkká voda** s vyváženým poměrem minerálů.",
+            "kvasinky": "**Specifické kvasinky pro Weizen** (např. SafAle WB-06, Munich Classic), které tvoří estery banánu (isoamyl acetát) a fenoly hřebíčku (4-VG).",
+            "tip": "Pšeničný slad nemá pluchy – dbej na správnou teplotu při scezování a případně použij rýžové slupky proti ucpání síta."
+        }
+    }
+    
+    data = suroviny_data[zvoleny_styl]
+    
+    st.subheader("4 pilíře vybraného stylu:")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"🌾 **Slad:** {data['slad']}")
+        st.markdown(f"🌿 **Chmel:** {data['chmel']}")
+    with col2:
+        st.markdown(f"🚰 **Voda:** {data['voda']}")
+        st.markdown(f"🧫 **Kvasinky:** {data['kvasinky']}")
+        
+    st.warning(f"💡 **Tip sládka:** {data['tip']}")
 if selected_view == "📘 1. Základy & Suroviny":
     st.header("Lekce 1: Základy a suroviny")
     
