@@ -23,7 +23,7 @@ st.set_page_config(
 # =============================================================================
 # INICIALIZACE FIREBASE
 # =============================================================================
-FIREBASE_WEB_API_KEY = st.secrets["FIREBASE_WEB_API_KEY"]
+FIREBASE_WEB_API_KEY = st.secrets.get("FIREBASE_WEB_API_KEY", "")
 
 @st.cache_resource
 def init_firestore():
@@ -50,7 +50,7 @@ DEFAULT_STATE = {
         "lekce5": {"title": "5. Kvašení & Diacetyl", "completed": False, "score": 0},
         "lekce6": {"title": "6. Ležákování & KEG CO₂", "completed": False, "score": 0},
         "lekce7": {"title": "7. Senzorika & Pivní vady", "completed": False, "score": 0},
-        "lekce8": {"title": "8. Receptury & Tvorba ležáku", "completed": False, "score": 0},
+        "lekce8": {"title": "8. Receptury & Tvorba", "completed": False, "score": 0},
         "lekce9_10": {"title": "9 & 10. Checklist & Várka", "completed": False, "score": 0},
     },
     "batch_logs": [],
@@ -220,7 +220,7 @@ st.sidebar.markdown(f"**Dokončeno:** `{completed_count} / {total_count} lekcí`
 st.sidebar.progress(progress_val)
 st.sidebar.divider()
 
-# 1. Nejprve výběr stylu v sidebaru
+# 1. Výběr stylu v sidebaru
 st.sidebar.subheader("🍺 Nastavení pivního stylu")
 zvoleny_styl = st.sidebar.selectbox(
     "Styl pro celý kurz:",
@@ -253,6 +253,7 @@ menu_items = [
     "⏱️ Časovač varného dne"
 ]
 selected_view = st.sidebar.radio("Přejít na:", menu_items)
+
 # =============================================================================
 # LEKCE 1: ZÁKLADY & SUROVINY
 # =============================================================================
@@ -260,7 +261,6 @@ if "1. Základy & Suroviny" in selected_view:
     st.header("📘 Lekce 1: Základy a suroviny")
     st.info(f"🎯 Zvolený pivní styl: **{zvoleny_styl}**")
     
-    # Slovník se specifikacemi pro jednotlivé styly
     suroviny_data = {
         "Český světlý ležák (Pilsner)": {
             "slad": "**Plzeňský slad (95–100 %)**. Šetrně sušený ječmenný slad s vysokou enzymatickou silou. Možno doplnit 3–5 % Carapils pro stabilitu pěny.",
@@ -304,29 +304,13 @@ if "1. Základy & Suroviny" in selected_view:
         st.markdown(f"🧫 **Kvasinky:** {data['kvasinky']}")
         
     st.warning(f"💡 **Tip sládka:** {data['tip']}")
-if selected_view == "📘 1. Základy & Suroviny":
-    st.header("Lekce 1: Základy a suroviny")
-    
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        st.markdown("""
-        ### 4 pilíře piva:
-        1. **Voda:** Tvoří přes 90 % piva. Ionty ($Ca^{2+}, Mg^{2+}, Cl^-, SO_4^{2-}$) definují charakter sladovosti a ostrosti hořkosti.
-        2. **Slad:** Naklíčený a šetrně usušený ječmen. Zdroj enzymů a zkvasitelného extraktu.
-        3. **Chmel:** Dodává hořkost (alfa-kyseliny) a aroma (chmelové silice). Působí antibakteriálně.
-        4. **Kvasnice:**
-           * *Spodní (Saccharomyces pastorianus):* Ležáky ($8–12\,^\circ\text{C}$).
-           * *Svrchní (Saccharomyces cerevisiae):* Ale, Stout, Pšenice ($16–22\,^\circ\text{C}$).
-        """)
-    with col2:
-        st.info("💡 **Základní pravidlo:** Ležák neodpouští chyby – nízká teplota kvašení zaručuje čistý profil bez nežádoucích ovocných esterů.")
 
     st.subheader("Mini-kvíz: Prověř si znalosti")
     with st.form("form_lekce1"):
-        q1 = st.radio("Při jaké teplotě probíhá hlavní kvašení spodně kvašeného českého ležáku?", ["18–22 °C", "8–12 °C", "0–2 °C"])
+        q1 = st.radio("Při jaké teplotě probíhá optimální kvašení spodně kvašeného českého ležáku?", ["18–22 °C", "7–11 °C", "0–2 °C"])
         q2 = st.radio("Která složka chmele poskytuje trvalou hořkost po dlouhém varu?", ["Silice a aroma oleje", "Izomerizované alfa-kyseliny", "Třísloviny z listů"])
         if st.form_submit_button("Vyhodnotit kvíz"):
-            if q1 == "8–12 °C" and q2 == "Izomerizované alfa-kyseliny":
+            if q1 == "7–11 °C" and q2 == "Izomerizované alfa-kyseliny":
                 st.success("🎉 Skvěle! Obě odpovědi jsou správné.")
                 st.session_state.kurz["lessons"]["lekce1"]["completed"] = True
                 save_data(st.session_state.kurz)
@@ -347,7 +331,6 @@ elif "2. Voda a její úprava" in selected_view:
     
     st.markdown("Voda tvoří přes 90 % piva. Každý pivní styl vyžaduje odlišné minerální složení pro zvýraznění sladu nebo chmele.")
     
-    # Databáze profilů vody navázaná na globální výběr (zvoleny_styl)
     profily = {
         "Český světlý ležák (Pilsner)": {
             "popis": "Extrémně měkká voda s minimem minerálů. Cílem je čistá, neulpívající a jemná hořkost s hladkým tělem.",
@@ -403,12 +386,9 @@ elif "2. Voda a její úprava" in selected_view:
         }
     }
     
-    # Automatické načtení podle globální volby v sidebaru
     profil = profily[zvoleny_styl]
-    
     st.info(f"💡 **Profil pro {zvoleny_styl}:** {profil['popis']}")
     
-    # Cílové parametry
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Vápník (Ca²⁺)", profil["ca"])
     col2.metric("Síran (SO₄²⁻)", profil["so4"])
@@ -417,36 +397,30 @@ elif "2. Voda a její úprava" in selected_view:
     
     st.markdown(f"**Cílové pH rmutu při 20 °C:** `{profil['ph']}`")
     st.warning(f"📌 **Doporučení sládka:** {profil['tip']}")
-    
     st.divider()
     
-    # Test znalostí přizpůsobený stylu
     st.subheader(f"📝 Kvíz: Voda pro {zvoleny_styl}")
     with st.form("quiz_voda"):
-        q1 = st.radio(
-            "Jaké je ideální cílové pH rmutu pro optimální práci enzymů?",
-            ["6.2 – 6.8", "5.2 – 5.5", "4.0 – 4.5"]
-        )
+        q1 = st.radio("Jaké je ideální cílové pH rmutu pro optimální práci enzymů?", ["6.2 – 6.8", "5.2 – 5.5", "4.0 – 4.5"])
         q2 = st.radio(profil["q2_q"], profil["q2_opts"])
         submit_voda = st.form_submit_button("Vyhodnotit odpovědi")
         
         if submit_voda:
             body = 0
-            if q1 == "5.2 – 5.5":
-                body += 1
-            if q2 == profil["q2_ans"]:
-                body += 1
+            if q1 == "5.2 – 5.5": body += 1
+            if q2 == profil["q2_ans"]: body += 1
                 
             if body == 2:
                 st.success(f"Výborně! 2/2 správně pro styl {zvoleny_styl} 🎉")
+                st.session_state.kurz["lessons"]["lekce2"]["completed"] = True
+                save_data(st.session_state.kurz)
             else:
                 st.warning(f"Máš {body}/2 správně. Prohlédni si doporučení výše a zkus to znovu.")
-                
+
 # ==========================================
 # LEKCE 3: RMUTOVÁNÍ & ENZYMY
 # ==========================================
 elif "3. Rmutování & Enzymy" in selected_view:
-    # Dynamický nadpis podle stylu (odsazeno o 4 mezery)
     if "Pilsner" in zvoleny_styl:
         st.header("🔥 Lekce 3: Dekokční rmutování a enzymatika")
     elif "IPA" in zvoleny_styl:
@@ -465,7 +439,6 @@ elif "3. Rmutování & Enzymy" in selected_view:
 
     st.divider()
 
-    # Nastavení metod podle vybraného stylu
     if "IPA" in zvoleny_styl:
         st.subheader("⚙️ Rmutovací technologie pro American IPA / APA")
         st.warning("💡 **Pravidlo pro IPA:** U amerických piv se dekokce nepoužívá. Cílem je jednoduchá infuze pro dosažení suchého těla, které dá vyniknout chmelu.")
@@ -486,7 +459,7 @@ elif "3. Rmutování & Enzymy" in selected_view:
             "Infuze s ferulovou pauzou (44 °C na hřebíček + 63 °C + 72 °C)",
             "Jednormutová dekokce pro Weizen"
         ]
-    else:  # Stout / Porter
+    else:
         st.subheader("⚙️ Rmutovací technologie pro Stout / Tmavá piva")
         dopstupne_metody = [
             "Jednokroková infuze na plné tělo (67–69 °C)",
@@ -496,10 +469,9 @@ elif "3. Rmutování & Enzymy" in selected_view:
     metoda = st.radio(
         "Zvol technologický postup:",
         dopstupne_metody,
-        key=f"rmut_metoda_{zvoleny_styl}"  # Klíč zajistí automatický reset při změně stylu
+        key=f"rmut_metoda_{zvoleny_styl}"
     )
 
-    # Databáze postupů
     postupy_data = {
         "Jednokroková infuze na vyšší prokvašení (65 °C)": {
             "casy": [0, 10, 70, 80, 90],
@@ -606,9 +578,6 @@ elif "3. Rmutování & Enzymy" in selected_view:
 
     st.success(f"💎 **Charakteristika:** {d['vyhody']}")
 
-    # Vykreslení grafu
-    import matplotlib.pyplot as plt
-
     fig, ax = plt.subplots(figsize=(9, 3.8))
     ax.plot(d["casy"], d["teploty"], marker='o', color='#E65100', linewidth=2.5, label='Teplota díla')
     ax.set_title(f"Teplotní diagram: {metoda.split('(')[0].strip()}", fontsize=11, fontweight='bold')
@@ -622,7 +591,7 @@ elif "3. Rmutování & Enzymy" in selected_view:
     ax.legend(loc='lower right', fontsize=8)
     ax.grid(True, linestyle='--', alpha=0.35)
     st.pyplot(fig)
-                
+
 # ==========================================
 # LEKCE 4: SCEZOVÁNÍ & RECIRKULACE
 # ==========================================
@@ -741,7 +710,6 @@ elif "5. Kvašení & Diacetyl" in selected_view:
         
     st.divider()
     
-    # Dynamický kvíz pro vybraný styl
     st.subheader(f"📝 Kvíz: Kvašení pro {zvoleny_styl}")
     with st.form("quiz_kvaseni"):
         ans1 = st.radio(k["q1_q"], k["q1_opts"])
@@ -750,13 +718,13 @@ elif "5. Kvašení & Diacetyl" in selected_view:
         
         if submit_kvas:
             score = 0
-            if ans1 == k["q1_ans"]:
-                score += 1
-            if ans2 == k["q2_ans"]:
-                score += 1
+            if ans1 == k["q1_ans"]: score += 1
+            if ans2 == k["q2_ans"]: score += 1
                 
             if score == 2:
                 st.success(f"Výborně! {score}/2 správně pro {zvoleny_styl} 🎉")
+                st.session_state.kurz["lessons"]["lekce5"]["completed"] = True
+                save_data(st.session_state.kurz)
             else:
                 st.warning(f"Získal jsi {score}/2 bodů. Zkontroluj doporučení výše a zkus to znovu.")
 
@@ -821,6 +789,8 @@ elif "6. Ležákování & KEG" in selected_view:
         if st.form_submit_button("Odevzdat test"):
             if q_keg == "Abychom zabránili oxidaci piva (chuti po mokrém kartonu a degradaci chmelu)":
                 st.success("Správně! Kyslík je největší nepřítel hotového piva 🎉")
+                st.session_state.kurz["lessons"]["lekce6"]["completed"] = True
+                save_data(st.session_state.kurz)
             else:
                 st.warning("Zkus to znovu. Klíčem je ochrana před vzdušným kyslíkem.")
 
@@ -901,6 +871,8 @@ elif "7. Senzorika & Pivní vady" in selected_view:
         if st.form_submit_button("Vyhodnotit test"):
             if q_vada == sn["spravne"]:
                 st.success("Výborně! Správná odpověď 🎉")
+                st.session_state.kurz["lessons"]["lekce7"]["completed"] = True
+                save_data(st.session_state.kurz)
             else:
                 st.warning("Špatná odpověď, pročti si vady výše a zkus to znovu.")
 
@@ -961,6 +933,8 @@ elif "8. Receptury & Tvorba" in selected_view:
         if st.form_submit_button("Odevzdat"):
             if q_rec == rc["spravne"]:
                 st.success("Správně! Recepturu máš v malíku 🎉")
+                st.session_state.kurz["lessons"]["lekce8"]["completed"] = True
+                save_data(st.session_state.kurz)
             else:
                 st.warning("Zkus to znovu podle parametrů výše.")
 
@@ -1015,8 +989,8 @@ elif selected_view == "📋 9 & 10. Checklist & Várka":
                 <p style="font-size: 1.1rem; margin-bottom: 15px;">Tímto se osvědčuje, že absolvent</p>
                 <h2 style="color: #0F172A; text-decoration: underline; margin-bottom: 15px;">SLÁDEK MISTR</h2>
                 <p style="font-size: 1rem; line-height: 1.6;">
-                    úspěšně zvládl teorii i praxi výroby tradičního českého ležáku,<br>
-                    výpočty chemie vody, rmutovací diagramy, kvašení i senzoriku piva.
+                    úspěšně zvládl teorii i praxi výroby tradičního piva,<br>
+                    výpočty chemie vody, rmutovací diagramy, kvašení i senzoriku.
                 </p>
                 <h4 style="color: #B45309; margin-top: 20px;">🍺 Dej Bůh štěstí! 🍺</h4>
             </div>
@@ -1038,52 +1012,116 @@ elif selected_view == "📚 Databáze receptů":
     with tab_new:
         st.subheader("Vytvořit nový recept")
 
-        with st.form("form_new_recipe"):
-            r_c1, r_c2 = st.columns(2)
-            with r_c1:
-                r_name = st.text_input("Název receptu *", placeholder="např. Světlý ležák 11°")
-                r_style = st.text_input("Styl piva", placeholder="Světlý ležák, APA, Stout...")
-                r_batch = st.number_input("Objem várky (l)", value=20.0, step=1.0)
-                r_og = st.number_input("Cílová stupňovitost (°P)", value=11.3, step=0.1)
+        r_c1, r_c2 = st.columns(2)
+        with r_c1:
+            r_name = st.text_input("Název receptu *", placeholder="např. Světlý ležák 11°")
+            r_style = st.text_input("Styl piva", placeholder="Světlý ležák, APA, Stout...")
+            r_batch = st.number_input("Objem várky (l)", value=20.0, step=1.0)
+            r_og = st.number_input("Cílová stupňovitost (°P)", value=11.3, step=0.1)
 
-            with r_c2:
-                r_ibu = st.number_input("Cílová hořkost (IBU)", value=35.0, step=1.0)
-                r_ebc = st.number_input("Barva piva (EBC / SRM)", value=9.0, step=0.5)
-                r_yeast = st.text_input("Kvasnice", value="Saflager W-34/70")
+        with r_c2:
+            r_ibu = st.number_input("Cílová hořkost (IBU)", value=35.0, step=1.0)
+            r_ebc = st.number_input("Barva piva (EBC / SRM)", value=9.0, step=0.5)
+            r_yeast = st.text_input("Kvasnice", value="Saflager W-34/70")
 
-            r_malts = st.text_area("Sypání (slady)", "Plzeňský slad: 4.2 kg\nMnichovský slad: 0.3 kg")
-            r_hops = st.text_area("Chmelový rozvrh", "ŽPČ (3.8% alfa) 35 g – 75 min\nŽPČ (3.8% alfa) 25 g – 25 min\nŽPČ (3.8% alfa) 25 g – 5 min")
-            r_notes = st.text_area("Poznámky k rmutování / várce", "Infuzní rmutování: 52 °C (15 min), 63 °C (40 min), 72 °C (20 min), mash-out 78 °C.")
+        r_malts = st.text_area("Sypání (slady)", "Plzeňský slad: 4.2 kg\nMnichovský slad: 0.3 kg")
 
-            submit_recipe = st.form_submit_button("💾 Uložit recept do databáze")
+        # --- KALKULÁTOR CHMELENÍ ---
+        CHMELY_DB = {
+            "Žatecký poloraný červeňák (Saaz)": 3.8,
+            "Sládek": 6.5,
+            "Premiant": 8.5,
+            "Kazbek": 6.0,
+            "Agnus": 11.5,
+            "Citra": 13.0,
+            "Mosaic": 12.0,
+            "Simcoe": 13.0,
+            "Cascade": 6.5,
+            "Amarillo": 9.0,
+            "Magnum": 13.5,
+            "Hallertau Mittelfrüh": 4.0
+        }
 
-            if submit_recipe:
-                if not r_name.strip():
-                    st.error("Vyplň prosím název receptu.")
-                else:
-                    new_entry = {
-                        "name": r_name,
-                        "style": r_style if r_style else "Neuvedeno",
-                        "batch": r_batch,
-                        "og": r_og,
-                        "ibu": r_ibu,
-                        "ebc": r_ebc,
-                        "yeast": r_yeast,
-                        "malts": r_malts,
-                        "hops": r_hops,
-                        "notes": r_notes,
-                        "created_at": datetime.now().strftime("%d.%m.%Y")
-                    }
-                    st.session_state.kurz.setdefault("recipes", []).append(new_entry)
-                    save_data(st.session_state.kurz)
-                    st.success(f"Recept **{r_name}** byl úspěšně uložen!")
-                    st.rerun()
+        st.markdown("#### 🌿 Nastavení chmelového rozvrhu")
+
+        col_h1, col_h2, col_h3 = st.columns([2, 1, 1])
+        with col_h1:
+            chmel_1 = st.selectbox("1. dávka (Hořkost):", list(CHMELY_DB.keys()), index=0, key="rec_chm1")
+        with col_h2:
+            alfa_1 = st.number_input("Alfa % (1)", value=CHMELY_DB[chmel_1], step=0.1, key="rec_alf1")
+        with col_h3:
+            cas_1 = st.number_input("Minut (1)", value=75, step=5, key="rec_cas1")
+
+        col_c1, col_c2, col_c3 = st.columns([2, 1, 1])
+        with col_c1:
+            chmel_2 = st.selectbox("2. dávka (Chuť):", list(CHMELY_DB.keys()), index=0, key="rec_chm2")
+        with col_c2:
+            alfa_2 = st.number_input("Alfa % (2)", value=CHMELY_DB[chmel_2], step=0.1, key="rec_alf2")
+        with col_c3:
+            cas_2 = st.number_input("Minut (2)", value=25, step=5, key="rec_cas2")
+
+        col_a1, col_a2, col_a3 = st.columns([2, 1, 1])
+        with col_a1:
+            chmel_3 = st.selectbox("3. dávka (Aroma):", list(CHMELY_DB.keys()), index=0, key="rec_chm3")
+        with col_a2:
+            alfa_3 = st.number_input("Alfa % (3)", value=CHMELY_DB[chmel_3], step=0.1, key="rec_alf3")
+        with col_a3:
+            cas_3 = st.number_input("Minut (3)", value=5, step=5, key="rec_cas3")
+
+        def get_utilization(time_min):
+            if time_min >= 60: return 0.28
+            if time_min >= 40: return 0.23
+            if time_min >= 20: return 0.16
+            if time_min >= 10: return 0.10
+            return 0.05
+
+        u1 = get_utilization(cas_1)
+        u2 = get_utilization(cas_2)
+        u3 = get_utilization(cas_3)
+
+        varky_objem = float(r_batch)
+        pozadovane_ibu = float(r_ibu)
+
+        ibu_1 = pozadovane_ibu * 0.60
+        ibu_2 = pozadovane_ibu * 0.30
+        ibu_3 = pozadovane_ibu * 0.10
+
+        g1 = round((ibu_1 * varky_objem) / (alfa_1 * u1 * 10), 1) if (alfa_1 * u1) > 0 else 0
+        g2 = round((ibu_2 * varky_objem) / (alfa_2 * u2 * 10), 1) if (alfa_2 * u2) > 0 else 0
+        g3 = round((ibu_3 * varky_objem) / (alfa_3 * u3 * 10), 1) if (alfa_3 * u3) > 0 else 0
+
+        st.info(f"⚖️ **Doporučené dávky pro {pozadovane_ibu:.0f} IBU ({varky_objem:.0f} l):** 1. dávka: `{g1} g` ({ibu_1:.1f} IBU) | 2. dávka: `{g2} g` ({ibu_2:.1f} IBU) | 3. dávka: `{g3} g` ({ibu_3:.1f} IBU)")
+
+        r_hops = f"{chmel_1} ({alfa_1}% alfa) {g1} g – {cas_1} min\n{chmel_2} ({alfa_2}% alfa) {g2} g – {cas_2} min\n{chmel_3} ({alfa_3}% alfa) {g3} g – {cas_3} min"
+
+        r_notes = st.text_area("Poznámky k rmutování / várce", "Infuzní rmutování: 52 °C (15 min), 63 °C (40 min), 72 °C (20 min), mash-out 78 °C.")
+
+        if st.button("💾 Uložit recept do databáze"):
+            if not r_name.strip():
+                st.error("Vyplň prosím název receptu.")
+            else:
+                new_entry = {
+                    "name": r_name,
+                    "style": r_style if r_style else "Neuvedeno",
+                    "batch": r_batch,
+                    "og": r_og,
+                    "ibu": r_ibu,
+                    "ebc": r_ebc,
+                    "yeast": r_yeast,
+                    "malts": r_malts,
+                    "hops": r_hops,
+                    "notes": r_notes,
+                    "created_at": datetime.now().strftime("%d.%m.%Y")
+                }
+                st.session_state.kurz.setdefault("recipes", []).append(new_entry)
+                save_data(st.session_state.kurz)
+                st.success(f"Recept **{r_name}** byl úspěšně uložen!")
+                st.rerun()
 
     # --- TAB 2: SEZNAM RECEPTŮ & EDITOR ---
     with tab_list:
         st.subheader("Moje uložené receptury")
 
-        # FORMULÁŘ EDITACE
         if st.session_state.edit_mode and st.session_state.edit_recipe_idx is not None:
             e_idx = st.session_state.edit_recipe_idx
             recipes_list = st.session_state.kurz.get("recipes", [])
@@ -1139,7 +1177,6 @@ elif selected_view == "📚 Databáze receptů":
 
                 st.divider()
 
-        # VÝPIS ULOŽENÝCH RECEPTŮ
         recipes = st.session_state.kurz.get("recipes", [])
         if not recipes:
             st.info("Zatím nemáš uložené žádné vlastní recepty. Vytvoř první v záložce 'Nový recept' nebo si vygeneruj z šablon.")
@@ -1278,7 +1315,6 @@ elif selected_view == "📚 Databáze receptů":
         with col_gen2:
             st.markdown(f"**🌾 Sypání:**\n```text\n{p['malts']}\n```")
 
-        # Úprava chmelení a výpočet IBU
         st.markdown("#### 🌿 Úprava chmelení a automatický přepočet IBU (Tinseth)")
         
         hop_df = pd.DataFrame(p["hops_data"])
@@ -1376,8 +1412,8 @@ elif selected_view == "🧮 Sládkova pokročilá kalkulačka":
         st.subheader("Výpočet hořkosti IBU (Tinsethova metoda)")
         c_ib1, c_ib2 = st.columns(2)
         with c_ib1:
-            var_l = st.number_input("Objem při chmelovaru (l)", value=cilovy_objem, step=1.0)
-            var_sg_in = st.number_input("Hustota mladiny při varu (SG)", value=float(f"{sg_val:.3f}"), step=0.002, format="%.3f")
+            var_l = st.number_input("Objem při chmelovaru (l)", value=20.0, step=1.0)
+            var_sg_in = st.number_input("Hustota mladiny při varu (SG)", value=1.045, step=0.002, format="%.3f")
 
         chmely_df = pd.DataFrame([
             {"Nazev": "1. ŽPČ (Hořkost)", "Hmotnost_g": 35.0, "Alfa_proc": 3.8, "Cas_min": 75},
@@ -1403,8 +1439,8 @@ elif selected_view == "🧮 Sládkova pokročilá kalkulačka":
         st.subheader("Minerální profil, zbytková alkalita a dávkování kyseliny mléčné")
         col_w1, col_w2 = st.columns(2)
         with col_w1:
-            w_vol = st.number_input("Objem rmutovací vody (l)", value=rmut_voda, step=1.0)
-            w_slad = st.number_input("Slad do rmutu (kg)", value=slad_kg, step=0.1)
+            w_vol = st.number_input("Objem rmutovací vody (l)", value=15.0, step=1.0)
+            w_slad = st.number_input("Slad do rmutu (kg)", value=4.5, step=0.1)
             st.markdown("**Zdrojová voda (ppm / mg/l):**")
             w_ca = st.number_input("Vápník (Ca²⁺)", value=25.0)
             w_mg = st.number_input("Hořčík (Mg²⁺)", value=6.0)
@@ -1418,13 +1454,11 @@ elif selected_view == "🧮 Sládkova pokročilá kalkulačka":
             g_gypsum = st.number_input("Sádrovec (CaSO₄ · 2H₂O) [g]", value=0.0, step=0.5)
             target_ph = st.slider("Cílové pH rmutu", 5.20, 5.60, 5.35, 0.05)
 
-        # Ionty
         ca_add = ((g_gypsum * 232.8) + (g_cacl2 * 272.6)) / w_vol
         so4_add = (g_gypsum * 557.9) / w_vol
         cl_add = (g_cacl2 * 482.3) / w_vol
         f_ca, f_mg, f_so4, f_cl, f_hco3 = w_ca + ca_add, w_mg, w_so4 + so4_add, w_cl + cl_add, w_hco3
 
-        # Kolbachova Zbytková Alkalita
         alk_caco3 = f_hco3 * (50.04 / 61.02)
         ra_ppm = alk_caco3 - ((f_ca / 1.4) + (f_mg / 1.7))
         ra_dh = ra_ppm / 17.848
@@ -1443,7 +1477,7 @@ elif selected_view == "🧮 Sládkova pokročilá kalkulačka":
         st.info(f"💡 **Instrukce pro vystírku:** Přidej **{ml_kyseliny:.1f} ml** 80% kyseliny mléčné do {w_vol:.1f} l vystírací vody před nasypáním sladu.")
 
 # =============================================================================
-# ČASOVAČ VARNÉHO DNE (ISOLATED VIA ST.FRAGMENT)
+# ČASOVAČ VARNÉHO DNE
 # =============================================================================
 elif selected_view == "⏱️ Časovač varného dne":
     st.header("⏱️ Asistent varného dne (Live Timer)")
