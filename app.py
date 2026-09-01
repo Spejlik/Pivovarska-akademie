@@ -1549,6 +1549,21 @@ elif selected_view == "🧮 Sládkova pokročilá kalkulačka":
 elif selected_view == "⏱️ Časovač varného dne":
     st.header("⏱️ Asistent varného dne (Live Timer)")
     st.markdown("Přesný časovač všech fází rmutování, dekokčních varů a chmelovaru se zvukovým signálem.")
+    
+    # --- NAČTENÍ RECEPTU Z DATABÁZE ---
+    uložené_recepty = st.session_state.kurz.get("recipes", [])
+    nazvy_receptu = ["-- Ruční nastavení bez receptu --"] + [r.get("name", "Bez názvu") for r in uložené_recepty]
+    
+    vybrany_recept_nazev = st.selectbox("🍺 Načíst parametry z uloženého receptu:", nazvy_receptu)
+    
+    aktivni_recept = None
+    if vybrany_recept_nazev != "-- Ruční nastavení bez receptu --":
+        aktivni_recept = next((r for r in uložené_recepty if r.get("name") == vybrany_recept_nazev), None)
+        if aktivni_recept:
+            st.success(f"✅ Načten recept: **{aktivni_recept['name']}** ({aktivni_recept.get('style', '')})")
+            if aktivni_recept.get("notes"):
+                st.caption(f"📋 **Technologické poznámky:** {aktivni_recept['notes']}")
+    
     st.divider()
 
     t_mod = st.radio(
@@ -1556,8 +1571,6 @@ elif selected_view == "⏱️ Časovač varného dne":
         ["🔥 Infuzní rmutování", "🥣 Dekokční rmutování (1–3 rmuty)", "🌿 Chmelovar & Whirlpool"],
         horizontal=True
     )
-
-    phases = []
 
     # 1. INFUZNÍ REŽIM
     if t_mod == "🔥 Infuzní rmutování":
