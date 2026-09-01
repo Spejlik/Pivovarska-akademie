@@ -1226,69 +1226,83 @@ elif selected_view == "📚 Databáze receptů":
         st.markdown("Vyber styl piva, uprav si parametry chmelení a nechej IBU automaticky přepočítat.")
 
         style = st.selectbox("Vyber styl piva:", [
-            "Světlý český ležák 11°",
-            "Světlý český ležák 12°",
-            "Polotmavý ležák 13°",
-            "Tmavý speciál 14°",
-            "IPA 14°",
-            "American Pale Ale 12°"
+            "Světlý český ležák 11° (Jednormutová dekokce)",
+            "Světlý český ležák 12° (Dvourmutová dekokce)",
+            "Historický ležák 12° (Třírmutová dekokce)",
+            "Polotmavý ležák 13° (Dvourmutová dekokce)",
+            "Tmavý speciál 14° (Dvourmut)",
+            "IPA 14° (Infuze)",
+            "American Pale Ale 12° (Infuze)",
+            "Německé pšeničné 12° (Ferulová infuze)"
         ])
 
         profiles = {
-            "Světlý český ležák 11°": {
-                "og": 11.0, "srm": 6, "batch": 20.0,
-                "malts": "Plzeňský slad: 4.5 kg\nCarapils: 0.2 kg",
+            "Světlý český ležák 11° (Jednormutová dekokce)": {
+                "og": 11.3, "srm": 6, "batch": 20.0,
+                "malts": "Plzeňský slad: 4.2 kg\nMnichovský slad: 0.3 kg\nCarapils: 0.1 kg",
                 "hops_data": [
-                    {"Nazev": "ŽPČ (1. dávka)", "Hmotnost_g": 35.0, "Alfa_proc": 3.8, "Cas_min": 75},
+                    {"Nazev": "Premiant / Sládek (1. dávka)", "Hmotnost_g": 18.0, "Alfa_proc": 7.5, "Cas_min": 75},
                     {"Nazev": "ŽPČ (2. dávka)", "Hmotnost_g": 25.0, "Alfa_proc": 3.8, "Cas_min": 25},
                     {"Nazev": "ŽPČ (3. dávka)", "Hmotnost_g": 25.0, "Alfa_proc": 3.8, "Cas_min": 5}
                 ],
-                "yeast": "Saflager W-34/70 (2 balíčky)",
-                "notes": "Klasický český ležák s pevnou hořkostí a čistým profilem."
+                "yeast": "Pivovarské husté kvasnice / W-34/70",
+                "notes": "Jednormutová dekokce: Vystření na 52 °C (15 min). Ohřev na 63 °C. Odběr 1/3 hustého rmutu -> 72 °C (15 min) -> var rmutu 15 min. Vrácení a vyrovnání na 72 °C (cukření 20 min). Mash-out 78 °C. Kvašení při 7–9 °C."
             },
-            "Světlý český ležák 12°": {
-                "og": 12.0, "srm": 7, "batch": 20.0,
-                "malts": "Plzeňský slad: 5.0 kg\nCarapils: 0.3 kg",
+            "Světlý český ležák 12° (Dvourmutová dekokce)": {
+                "og": 12.2, "srm": 8, "batch": 20.0,
+                "malts": "Plzeňský slad: 4.8 kg\nMnichovský slad: 0.4 kg",
                 "hops_data": [
-                    {"Nazev": "ŽPČ (1. dávka)", "Hmotnost_g": 40.0, "Alfa_proc": 3.8, "Cas_min": 75},
-                    {"Nazev": "ŽPČ (2. dávka)", "Hmotnost_g": 30.0, "Alfa_proc": 3.8, "Cas_min": 25},
+                    {"Nazev": "ŽPČ (1. dávka)", "Hmotnost_g": 40.0, "Alfa_proc": 3.8, "Cas_min": 90},
+                    {"Nazev": "ŽPČ (2. dávka)", "Hmotnost_g": 30.0, "Alfa_proc": 3.8, "Cas_min": 30},
                     {"Nazev": "ŽPČ (3. dávka)", "Hmotnost_g": 30.0, "Alfa_proc": 3.8, "Cas_min": 5}
                 ],
-                "yeast": "Saflager W-34/70 (2 balíčky)",
-                "notes": "Plnější tělo, vyšší hořkost, ideální pro klasickou prémiovou dvanáctku."
+                "yeast": "Pivovarské husté kvasnice / Saflager W-34/70",
+                "notes": "Klasická dvourmutová dekokce:\n1. Vystření na 37–52 °C (bílkovinná pauza 15 min).\n2. 1. rmut (1/3 hustého dílu): 63 °C (15 min), 72 °C (15 min), var 20 min -> vyrovnání celé varny na 63 °C (15 min).\n3. 2. rmut (1/3 hustého dílu): 72 °C (15 min), var 15 min -> vyrovnání celé varny na 72 °C (cukření 20 min).\n4. Mash-out na 78 °C. Chmelovar 90 min. Kvašení 7–8 °C, ležákování 1–3 °C 6 týdnů."
             },
-            "Polotmavý ležák 13°": {
-                "og": 13.0, "srm": 14, "batch": 20.0,
-                "malts": "Plzeňský slad: 4.5 kg\nMnichovský slad: 0.5 kg\nCaramunich I: 0.2 kg",
+            "Historický ležák 12° (Třírmutová dekokce)": {
+                "og": 12.5, "srm": 10, "batch": 20.0,
+                "malts": "Plzeňský slad (tradiční humnový): 5.2 kg",
                 "hops_data": [
-                    {"Nazev": "ŽPČ (1. dávka)", "Hmotnost_g": 35.0, "Alfa_proc": 3.8, "Cas_min": 60},
-                    {"Nazev": "ŽPČ (2. dávka)", "Hmotnost_g": 25.0, "Alfa_proc": 3.8, "Cas_min": 20}
+                    {"Nazev": "ŽPČ (1. dávka)", "Hmotnost_g": 45.0, "Alfa_proc": 3.8, "Cas_min": 90},
+                    {"Nazev": "ŽPČ (2. dávka)", "Hmotnost_g": 35.0, "Alfa_proc": 3.8, "Cas_min": 30},
+                    {"Nazev": "ŽPČ (3. dávka)", "Hmotnost_g": 30.0, "Alfa_proc": 3.8, "Cas_min": 5}
                 ],
-                "yeast": "Saflager W-34/70 (2 balíčky)",
-                "notes": "Chlebové tóny, jemná karamelovost a vyvážená hořkost."
+                "yeast": "Spodní kvasinky (např. W-34/70 nebo tekuté)",
+                "notes": "Historická třírmutová dekokce:\n1. Studené vystření na 35 °C.\n2. 1. rmut (1/3): 63 °C, 72 °C, var 25 min -> vyrovnání na 52 °C.\n3. 2. rmut (1/3): 63 °C, 72 °C, var 20 min -> vyrovnání na 63 °C.\n4. 3. rmut (1/3): 72 °C, var 15 min -> vyrovnání na 72 °C.\n5. Mash-out 78 °C. Hluboká zlatá barva a plná sladovost."
             },
-            "Tmavý speciál 14°": {
+            "Polotmavý ležák 13° (Dvourmutová dekokce)": {
+                "og": 13.0, "srm": 14, "batch": 20.0,
+                "malts": "Plzeňský slad: 4.2 kg\nMnichovský slad: 0.8 kg\nCaramunich II: 0.25 kg",
+                "hops_data": [
+                    {"Nazev": "Premiant (1. dávka)", "Hmotnost_g": 18.0, "Alfa_proc": 7.5, "Cas_min": 75},
+                    {"Nazev": "ŽPČ (2. dávka)", "Hmotnost_g": 25.0, "Alfa_proc": 3.8, "Cas_min": 25},
+                    {"Nazev": "ŽPČ (3. dávka)", "Hmotnost_g": 20.0, "Alfa_proc": 3.8, "Cas_min": 5}
+                ],
+                "yeast": "Pivovarské husté kvasnice / W-34/70",
+                "notes": "Dvourmutový postup. Karamelový slad (Caramunich) přidán až na druhý rmut pro zaoblenou karamelovou plnost bez trpkosti."
+            },
+            "Tmavý speciál 14° (Dvourmut)": {
                 "og": 14.0, "srm": 35, "batch": 20.0,
-                "malts": "Plzeňský slad: 4.0 kg\nMnichovský slad: 0.5 kg\nCarafa II: 0.2 kg\nCaramunich II: 0.3 kg",
+                "malts": "Plzeňský slad: 4.0 kg\nMnichovský slad: 0.7 kg\nCarafa Special II: 0.25 kg\nCaramunich II: 0.3 kg",
                 "hops_data": [
                     {"Nazev": "Premiant (1. dávka)", "Hmotnost_g": 25.0, "Alfa_proc": 7.5, "Cas_min": 60},
                     {"Nazev": "ŽPČ (2. dávka)", "Hmotnost_g": 25.0, "Alfa_proc": 3.8, "Cas_min": 10}
                 ],
-                "yeast": "Saflager W-34/70 (2 balíčky)",
-                "notes": "Tmavé tóny pražené čokolády, karamelu a jemná hořkost."
+                "yeast": "Saflager W-34/70",
+                "notes": "Dvourmutová dekokce světlých a mnichovských sladů. Barvicí slad Carafa Special přidán až na samotné scezování/vyslazování."
             },
-            "IPA 14°": {
+            "IPA 14° (Infuze)": {
                 "og": 14.0, "srm": 8, "batch": 20.0,
-                "malts": "Pale Ale slad: 4.5 kg\nCarapils: 0.3 kg",
+                "malts": "Pale Ale slad: 4.5 kg\nCarapils: 0.3 kg\nPšeničný slad: 0.3 kg",
                 "hops_data": [
-                    {"Nazev": "Citra (Hořkost)", "Hmotnost_g": 25.0, "Alfa_proc": 12.5, "Cas_min": 60},
+                    {"Nazev": "Citra (Hořkost)", "Hmotnost_g": 20.0, "Alfa_proc": 12.5, "Cas_min": 60},
                     {"Nazev": "Mosaic (Chuť)", "Hmotnost_g": 30.0, "Alfa_proc": 11.5, "Cas_min": 15},
-                    {"Nazev": "Citra (Whirlpool)", "Hmotnost_g": 40.0, "Alfa_proc": 12.5, "Cas_min": 0}
+                    {"Nazev": "Citra (Whirlpool 80°C)", "Hmotnost_g": 40.0, "Alfa_proc": 12.5, "Cas_min": 0}
                 ],
-                "yeast": "SafAle US-05 (1 balíček)",
-                "notes": "Citrusová a tropická IPA s výraznou, pevnou hořkostí. Možno přidat 50g Mosaic na Dry Hop."
+                "yeast": "SafAle US-05",
+                "notes": "Jednokroková infuze na 65 °C (60 min), mash-out 78 °C. Dry hopping: 50 g Citra + 50 g Mosaic na 3 dny před stáčením."
             },
-            "American Pale Ale 12°": {
+            "American Pale Ale 12° (Infuze)": {
                 "og": 12.0, "srm": 7, "batch": 20.0,
                 "malts": "Pale Ale slad: 4.2 kg\nCarapils: 0.2 kg",
                 "hops_data": [
@@ -1296,8 +1310,17 @@ elif selected_view == "📚 Databáze receptů":
                     {"Nazev": "Cascade (2. dávka)", "Hmotnost_g": 30.0, "Alfa_proc": 6.5, "Cas_min": 10},
                     {"Nazev": "Cascade (Whirlpool)", "Hmotnost_g": 40.0, "Alfa_proc": 6.5, "Cas_min": 0}
                 ],
-                "yeast": "SafAle US-05 (1 balíček)",
-                "notes": "Lehká, vysoce pitelná citrusová APA s jemnou květinovou hořkostí."
+                "yeast": "SafAle US-05",
+                "notes": "Infuze 66 °C (60 min), mash-out 78 °C. Jemná a vysoce pitelná APA."
+            },
+            "Německé pšeničné 12° (Ferulová infuze)": {
+                "og": 12.0, "srm": 5, "batch": 20.0,
+                "malts": "Pšeničný slad světlý: 2.6 kg\nPlzeňský slad: 2.2 kg",
+                "hops_data": [
+                    {"Nazev": "Hallertau Mittelfrüh (Hořkost)", "Hmotnost_g": 25.0, "Alfa_proc": 4.0, "Cas_min": 60}
+                ],
+                "yeast": "SafAle WB-06 / Munich Classic",
+                "notes": "Infuze: Ferulová pauza 44 °C (15 min pro hřebíček) -> 63 °C (35 min) -> 72 °C (25 min) -> 78 °C mash-out. Kvašení při 20–22 °C pro banánové estery."
             }
         }
 
