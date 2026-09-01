@@ -591,6 +591,7 @@ elif "3. Rmutování & Enzymy" in selected_view:
     ax.legend(loc='lower right', fontsize=8)
     ax.grid(True, linestyle='--', alpha=0.35)
     st.pyplot(fig)
+    st.caption("ℹ️ **Jak číst diagram:** Vodorovné linie znázorňují optimální teploty hlavních enzymů (63 °C a 72 °C). Vrcholy na 100 °C představují povaření odebrané části rmutu, zatímco následné ustálení teploty značí vyrovnání celé várky po vrácení vroucího dílu zpět.")
 
 # ==========================================
 # LEKCE 4: SCEZOVÁNÍ & RECIRKULACE
