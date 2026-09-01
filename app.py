@@ -220,6 +220,24 @@ st.sidebar.markdown(f"**Dokončeno:** `{completed_count} / {total_count} lekcí`
 st.sidebar.progress(progress_val)
 st.sidebar.divider()
 
+# 1. Nejprve výběr stylu v sidebaru
+st.sidebar.subheader("🍺 Nastavení pivního stylu")
+zvoleny_styl = st.sidebar.selectbox(
+    "Styl pro celý kurz:",
+    [
+        "Český světlý ležák (Pilsner)",
+        "American IPA / APA",
+        "Tmavý ležák / Stout",
+        "Německé pšeničné (Weizen)"
+    ]
+)
+
+st.sidebar.divider()
+
+# 2. Zkrácený název pro položku v menu
+styl_kratky = "ležáku" if "Pilsner" in zvoleny_styl else ("IPA" if "IPA" in zvoleny_styl else ("pšenice" if "Weizen" in zvoleny_styl else "stoutu"))
+
+# 3. Dynamický seznam menu_items
 menu_items = [
     "📘 1. Základy & Suroviny",
     "🚰 2. Voda a její úprava",
@@ -228,7 +246,7 @@ menu_items = [
     "🧪 5. Kvašení & Diacetyl",
     "❄️ 6. Ležákování & KEG CO₂",
     "👃 7. Senzorika & Pivní vady",
-    "🌾 8. Receptury & Tvorba ležáku",
+    f"🌾 8. Receptury & Tvorba ({styl_kratky})",
     "📋 9 & 10. Checklist & Várka",
     "---",
     "📚 Databáze receptů",
