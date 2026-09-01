@@ -439,45 +439,109 @@ elif "2. Voda a její úprava" in selected_view:
             else:
                 st.warning(f"Máš {body}/2 správně. Prohlédni si doporučení výše a zkus to znovu.")
                 
-# =============================================================================
+# ==========================================
 # LEKCE 3: RMUTOVÁNÍ & ENZYMY
-# =============================================================================
-elif selected_view == "🔥 3. Rmutování & Enzymy":
-    st.header("Lekce 3: Rmutování, enzymatika a rmutovací křivky")
+# ==========================================
+elif "3. Rmutování & Enzymy" in selected_view:
+    st.header("🔥 Lekce 3: Rmutovací procesy a enzymatika")
+    st.info(f"🎯 Výchozí doporučený styl: **{zvoleny_styl}**")
+    
     st.markdown("""
-    Rmutování je proces aktivace enzymů obsažených ve sladu pro rozštěpení škrobů na zkvasitelné a nezkvasitelné cukry:
-    * **Bílkovinná pauza ($50–54\,^\circ\text{C}$):** Štěpení bílkovin na aminokyseliny a střední bílkoviny pro pěnu.
-    * **Maltózová pauza ($62–65\,^\circ\text{C}$):** Beta-amyláza tvoří zkvasitelnou maltózu $\\rightarrow$ *sušší pivo*.
-    * **Sacharizační pauza ($70–74\,^\circ\text{C}$):** Alfa-amyláza tvoří nezkvasitelné dextriny $\\rightarrow$ *plné tělo*.
-    * **Mash-out ($76–78\,^\circ\text{C}$):** Deaktivace enzymů a snížení viskozity pro snadné scezování.
+    Rmutování je enzymatická přeměna nerozpustných sladových škrobů na zkvasitelné cukry (maltózu) a nezkvasitelné dextriny (plnost piva).
+    
+    * **Beta-amyláza (62–65 °C):** Tvoří zkvasitelnou maltózu $\\rightarrow$ pivo bude sušší a prokvašenější.
+    * **Alfa-amyláza (70–75 °C):** Tvoří delší cukry a dextriny $\\rightarrow$ pivo bude plné, sladové a zakulacené.
+    * **Odrmutování / Mash-out (78 °C):** Deaktivace enzymů a snížení viskozity pro bezproblémové scezování.
     """)
-
-    cas = [0, 15, 25, 65, 75, 95, 100, 105]
-    teploty = [52, 52, 63, 63, 72, 72, 78, 78]
-    fig, ax = plt.subplots(figsize=(8, 3.2))
-    ax.plot(cas, teploty, marker='o', color='#D97706', linewidth=2.5)
-    ax.set_title("Infuzní diagram ležáku 11°")
-    ax.set_xlabel("Čas (minuty)")
-    ax.set_ylabel("Teplota (°C)")
-    ax.grid(True, linestyle="--", alpha=0.4)
-    st.pyplot(fig)
-    plt.close(fig)
-
-    with st.form("form_lekce3"):
-        q = st.radio("Který enzym vytváří nezkvasitelné dextriny pro plné tělo ležáku?", ["Beta-amyláza (62–65 °C)", "Alfa-amyláza (70–74 °C)", "Peptidáza (50 °C)"])
-        if st.form_submit_button("Zkontrolovat"):
-            if q == "Alfa-amyláza (70–74 °C)":
-                st.success("Výborně! Alfa-amyláza štěpí škrob náhodně a vytváří komplexnější cukry.")
-                st.session_state.kurz["lessons"]["lekce3"]["completed"] = True
-                save_data(st.session_state.kurz)
-            else:
-                st.error("Chyba. Beta-amyláza tvoří jednoduchou zkvasitelnou maltózu.")
-
-    render_mentor(
-        "Před odrmutováním udělej vždy jodovou zkoušku (kapka rmutu na bílý talířek + kapka jodu). Pokud nezmodrá, rmut je plně zcukřen!",
-        "Nikdy nepřekračuj teplotu 78 °C. Nad 80 °C začnou pluchy uvolňovat svíravé taniny."
+    
+    st.divider()
+    
+    # Volba rmutovacího postupu
+    st.subheader("⚙️ Výběr rmutovací technologie pro detailní studium")
+    
+    vychozi_index = 2 if "Pilsner" in zvoleny_styl else (0 if "IPA" in zvoleny_styl else 1)
+    
+    metoda = st.radio(
+        "Zvol rmutovací postup:",
+        [
+            "Jednokroková / Vícekroková infuze (Anglosaský styl - IPA, Stout)",
+            "Jednormutová dekokce (Moderní světlý ležák / Weizen)",
+            "Dvourmutová dekokce (Klasický český ležák)",
+            "Třírmutová dekokce (Historický tradiční plzeňský postup)"
+        ],
+        index=vychozi_index
     )
-
+    
+    # Definice dat a teplotních profilů pro graf
+    dekokce_data = {
+        "Jednokroková / Vícekroková infuze (Anglosaský styl - IPA, Stout)": {
+            "casy": [0, 10, 70, 80, 90],
+            "teploty": [65, 65, 65, 78, 78],
+            "popis": "**Infuze:** Celý objem rmutu se zahřívá najednou nebo se udržuje na stálé teplotě (65–67 °C). Vhodné pro dobře rozluštěné slady (Pale Ale), ideální pro IPA, APA a Stout.",
+            "vyhody": "Rychlost (hotovo za cca 60–80 min), nízká energetická náročnost, čistý a suchý profil bez karamelových tónů."
+        },
+        "Jednormutová dekokce (Moderní světlý ležák / Weizen)": {
+            "casy": [0, 15, 30, 45, 55, 65, 80, 90, 100],
+            "teploty": [52, 52, 63, 63, 100, 72, 72, 78, 78],
+            "popis": "**1 rmut:** Vystření na 52 °C nebo 63 °C. Odebere se 1/3 hustého rmutu, povaří se (10–15 min) a vrátí zpět, čímž se celá várka ohřeje na 72 °C.",
+            "vyhody": "Kompromis mezi časem a plností chuti. Vhodné pro moderní ležáky a pšeničná piva."
+        },
+        "Dvourmutová dekokce (Klasický český ležák)": {
+            "casy": [0, 15, 25, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+            "teploty": [37, 52, 63, 100, 63, 63, 100, 72, 72, 78, 78, 78],
+            "popis": "**2 rmuty:** Vystření při 37–52 °C. Postupně se odeberou a povaří dva samostatné rmuty pro dosažení cukrotvorné (63 °C) a odcukřovací (72 °C) teploty.",
+            "vyhody": "Dokonalé štěpení škrobů, typická chlebnatá a plná sladovost, tvorba melanoidinů a zlatavé barvy tradičního českého ležáku."
+        },
+        "Třírmutová dekokce (Historický tradiční plzeňský postup)": {
+            "casy": [0, 15, 25, 40, 50, 65, 75, 90, 100, 115, 125, 140, 150],
+            "teploty": [35, 35, 63, 100, 52, 63, 100, 63, 63, 100, 72, 78, 78],
+            "popis": "**3 rmuty:** Historický postup vystírání za studena (35 °C). Tři samostatné povařené rmuty zajistily zcukření i u historických, velmi málo rozluštěných sladů z 19. století.",
+            "vyhody": "Maximální extraktivita ze surového sladu a výrazná melanoidinová barva. Dnes spíše raritní z důvodu vysoké časové náročnosti (cca 4 hodiny jen rmutování)."
+        }
+    }
+    
+    d = dekokce_data[metoda]
+    
+    st.markdown(d["popis"])
+    st.success(f"💎 **Charakteristika & Výhody:** {d['vyhody']}")
+    
+    # Vykreslení teplotní křivky
+    import matplotlib.pyplot as plt
+    
+    fig, ax = plt.subplots(figsize=(9, 3.8))
+    ax.plot(d["casy"], d["teploty"], marker='o', color='#E65100', linewidth=2.5, label='Teplota rmutu')
+    ax.set_title(f"Teplotní profil: {metoda.split('(')[0].strip()}", fontsize=12, fontweight='bold')
+    ax.set_xlabel("Čas od vystření (minuty)")
+    ax.set_ylabel("Teplota (°C)")
+    ax.set_ylim(30, 105)
+    ax.axhline(63, color='#4CAF50', linestyle='--', alpha=0.6, label='Beta-amyláza (63 °C)')
+    ax.axhline(72, color='#2196F3', linestyle='--', alpha=0.6, label='Alfa-amyláza (72 °C)')
+    ax.axhline(100, color='#D32F2F', linestyle=':', alpha=0.6, label='Var rmutu (100 °C)')
+    ax.legend(loc='lower right', fontsize=8)
+    ax.grid(True, linestyle='--', alpha=0.4)
+    st.pyplot(fig)
+    
+    st.divider()
+    
+    # Kvíz pro rmutování
+    st.subheader("📝 Kvíz: Znalosti enzymatiky a rmutování")
+    with st.form("quiz_rmut"):
+        q1 = st.radio(
+            "Při jaké teplotě probíhá optimální tvorba maltózy působením beta-amylázy (sušší profil piva)?",
+            ["52 °C", "62–65 °C", "78 °C"]
+        )
+        q2 = st.radio(
+            "Co je hlavním přínosem povaření části rmutu (dekokce) u českého ležáku?",
+            ["Zvýšení hořkosti chmele", "Štěpení nezkvasitelných škrobů, vznik melanoidinů a plná chlebnatá chuť", "Odpaření veškerého alkoholu"]
+        )
+        sub_rmut = st.form_submit_button("Vyhodnotit rmutování")
+        
+        if sub_rmut:
+            sc = (1 if q1 == "62–65 °C" else 0) + (1 if q2 == "Štěpení nezkvasitelných škrobů, vznik melanoidinů a plná chlebnatá chuť" else 0)
+            if sc == 2:
+                st.success("Perfektní! 2/2 správně 🎉")
+            else:
+                st.warning(f"Máš {sc}/2 správně. Prohlédni si graf a zkus to znovu.")
 # =============================================================================
 # LEKCE 4: SCEZOVÁNÍ & RECIRKULACE
 # =============================================================================
