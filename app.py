@@ -528,32 +528,99 @@ elif selected_view == "🪣 4. Scezování & Recirkulace":
         "Nikdy nevyslazuj vodou teplejší než 80 °C. Uvolněné třísloviny způsobí trpkou pachuť."
     )
 
-# =============================================================================
-# LEKCE 5: KVAŠENÍ & DIACETYL
-# =============================================================================
-elif selected_view == "🧪 5. Kvašení & Diacetyl":
-    st.header("Lekce 5: Spodní kvašení, Pitching rate a Diacetyl rest")
-    st.markdown("""
-    Spodní kvasinky (*S. pastorianus*) pracují při $8–12\,^\circ\text{C}$ a vyžadují **dvojnásobnou dávku (1.5 mil. buněk/ml/°P)** oproti svrchnímu kvašení.
-    * **Diacetyl (máslová chuť):** Přirozený vedlejší produkt.
-    * **Diacetyl rest:** Zvýšení teploty z $9\,^\circ\text{C}$ na **$13–15\,^\circ\text{C}$** ve chvíli, kdy zbývá prokvasit posledních 20–25 % cukrů. Kvasinky díky vyšší teplotě rychle diacetyl zkonzumují.
-    """)
-
-    with st.form("form_lekce5"):
-        q1 = st.radio("Kolik balíčků suchých kvasinek (11.5g) je potřeba pro 20 litrů 12° ležáku?", ["Pouze 1/2 balíčku", "1 balíček", "Minimálně 2 balíčky (pro ležácký pitching rate)"])
-        q2 = st.radio("Kdy zahajujeme Diacetyl rest?", ["Až po 4 týdnech v KEGu", "Ke konci hlavního kvašení při dokvašování posledních 20–25 % cukrů", "Při vystírání sladu"])
-        if st.form_submit_button("Vyhodnotit lekci 5"):
-            if "Minimálně 2" in q1 and "Ke konci hlavního" in q2:
-                st.success("Skvěle! Správná dávka kvasinek a včasný diacetyl rest jsou tajemstvím čistého ležáku.")
-                st.session_state.kurz["lessons"]["lekce5"]["completed"] = True
-                save_data(st.session_state.kurz)
+# ==========================================
+# LEKCE 5: KVAŠENÍ & MANAGEMENT KVASINEK
+# ==========================================
+elif "5. Kvašení & Diacetyl" in selected_view:
+    st.header("🧪 Lekce 5: Kvašení, pitching rate a vedlejší produkty")
+    st.info(f"🎯 Režim kvašení pro styl: **{zvoleny_styl}**")
+    
+    kvaseni_data = {
+        "Český světlý ležák (Pilsner)": {
+            "typ": "Spodní kvašení (*Saccharomyces pastorianus*, např. W-34/70)",
+            "teplota": "9–11 °C",
+            "pitching": "**1.5 milionu buněk / ml / °P** (cca **2 balíčky** sušených kvasinek 11.5 g na 20 l $12^\circ$ mladiny). Chladné prostředí vyžaduje vysokou dávku kvasinek pro rychlý start.",
+            "diacetyl": "**Zásadní:** Zvýšení teploty na 13–15 °C ve chvíli, kdy zbývá dokvasit posledních 20–25 % cukrů (cca při $3.5^\circ\text{P}$), aby kvasinky odbouraly máslový diacetyl.",
+            "specifika": "Pomalé kvašení (10–14 dní). Klíčová je stabilní teplota a minimum kyslíku při stáčení do ležáckých nádob.",
+            "q1_q": "Kolik balíčků suchých kvasinek (11.5 g) je potřeba pro 20 litrů 12° ležáku?",
+            "q1_opts": ["Pouze 1/2 balíčku", "1 balíček", "Minimálně 2 balíčky (pro ležácký pitching rate)"],
+            "q1_ans": "Minimálně 2 balíčky (pro ležácký pitching rate)",
+            "q2_q": "Kdy zahajujeme diacetylovou pauzu (Diacetyl rest)?",
+            "q2_opts": ["Až po 4 týdnech v KEGu", "Ke konci hlavního kvašení při dokvašování posledních 20–25 % cukrů", "Při vystírání sladu"],
+            "q2_ans": "Ke konci hlavního kvašení při dokvašování posledních 20–25 % cukrů"
+        },
+        "American IPA / APA": {
+            "typ": "Svrchní kvašení (*Saccharomyces cerevisiae*, např. US-05)",
+            "teplota": "18–20 °C",
+            "pitching": "**0.75 milionu buněk / ml / °P** (stačí **1 balíček** sušených kvasinek 11.5 g na 20 l mladiny).",
+            "diacetyl": "Díky vyšší teplotě kvasinky odbourají diacetyl přirozeně a rychle během hlavního kvašení.",
+            "specifika": "**Studené chmelení (Dry Hopping):** Chmel se přidává přímo do kvasné nádoby ke konci bouřlivého kvašení (na 2–4 dny) při 14–16 °C.",
+            "q1_q": "Jaký pitching rate (dávka kvasinek) stačí pro svrchně kvašenou IPA?",
+            "q1_opts": ["Standardní dávka (cca 1 balíček 11.5 g na 20 l)", "Extrémní dávka (3 balíčky)", "Není potřeba očkovat"],
+            "q1_ans": "Standardní dávka (cca 1 balíček 11.5 g na 20 l)",
+            "q2_q": "Kdy se typicky provádí Dry Hopping (studené chmelení)?",
+            "q2_opts": ["Při varu v kotli", "Ke konci hlavního kvašení před stočením", "Před zahájením rmutování"],
+            "q2_ans": "Ke konci hlavního kvašení před stočením"
+        },
+        "Tmavý ležák / Stout": {
+            "typ": "Dle receptury: Spodní (10 °C) pro tmavý ležák nebo Svrchní (18–20 °C, např. S-04) pro Stout",
+            "teplota": "10 °C (ležák) / 19 °C (stout)",
+            "pitching": "Záleží na kvasinkách: 1.5 mil. pro ležácký kmen, 0.75 mil. pro stoutové svrchní kmeny.",
+            "diacetyl": "U tmavých piv může mírný diacetyl působit sladce/karamelově, ale ve větším množství je vadou. Dodržuj stabilní dokvašení.",
+            "specifika": "Tmavé slady okyselují prostředí, proto kvašení nastupuje rychle. Pozor na odvětrání případných sirných tónů.",
+            "q1_q": "Jak působí tmavé a pražené slady na pH mladiny během kvašení?",
+            "q1_opts": ["Přirozeně okyselují prostředí (snižují pH)", "Zvyšují zásaditost", "Nemají žádný vliv na pH"],
+            "q1_ans": "Přirozeně okyselují prostředí (snižují pH)",
+            "q2_q": "Jaké kvasinky se nejčastěji používají pro tradiční suchý Stout (Dry Stout)?",
+            "q2_opts": ["Svrchní anglické kvasinky (např. S-04)", "Kvasinky na divoké kvašení", "Pouze plzeňské spodní kvasinky"],
+            "q2_ans": "Svrchní anglické kvasinky (např. S-04)"
+        },
+        "Německé pšeničné (Weizen)": {
+            "typ": "Specifické svrchní kvasinky (*SafAle WB-06*, *Munich Classic*)",
+            "teplota": "18–22 °C (Řízený profil esterů a fenolů)",
+            "pitching": "**Podmnožení (Underpitching):** Používá se standardní až mírně nižší dávka (1 balíček na 20 l), aby kvasinky vyprodukovaly více žádoucích esterů.",
+            "diacetyl": "Rychlé odbourání při 20 °C během 4–5 dnů.",
+            "specifika": "**Řízení chutí teplotou:** Nižší teplota (18 °C) = hřebíček (fenol 4-VG). Vyšší teplota (22 °C) = banán (isoamyl acetát).",
+            "q1_q": "Jak ovlivní vyšší kvasná teplota (cca 22 °C) profil pšeničného piva?",
+            "q1_opts": ["Zvýrazní banánové aroma (estery)", "Zvýrazní hřebíčkové aroma", "Pivo ztratí pěnu"],
+            "q1_ans": "Zvýrazní banánové aroma (estery)",
+            "q2_q": "Proč se u pšeničných piv často záměrně nepředávkují kvasinky (lehký underpitching)?",
+            "q2_opts": ["Aby kvasinky při růstu vytvořily více aromatických esterů", "Aby se ušetřilo na surovinách", "Aby pivo nemělo alkohol"],
+            "q2_ans": "Aby kvasinky při růstu vytvořily více aromatických esterů"
+        }
+    }
+    
+    k = kvaseni_data[zvoleny_styl]
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"🧫 **Typ kvasinek:** {k['typ']}")
+        st.markdown(f"🌡️ **Doporučená teplota:** `{k['teplota']}`")
+        st.markdown(f"⚖️ **Dávkování (Pitching rate):** {k['pitching']}")
+    with col2:
+        st.markdown(f"🧈 **Diacetyl & regulace:** {k['diacetyl']}")
+        st.markdown(f"💡 **Specifika kvašení:** {k['specifika']}")
+        
+    st.divider()
+    
+    # Dynamický kvíz pro vybraný styl
+    st.subheader(f"📝 Kvíz: Kvašení pro {zvoleny_styl}")
+    with st.form("quiz_kvaseni"):
+        ans1 = st.radio(k["q1_q"], k["q1_opts"])
+        ans2 = st.radio(k["q2_q"], k["q2_opts"])
+        submit_kvas = st.form_submit_button("Vyhodnotit lekci 5")
+        
+        if submit_kvas:
+            score = 0
+            if ans1 == k["q1_ans"]:
+                score += 1
+            if ans2 == k["q2_ans"]:
+                score += 1
+                
+            if score == 2:
+                st.success(f"Výborně! {score}/2 správně pro {zvoleny_styl} 🎉")
             else:
-                st.warning("Zkontroluj si doporučené dávkování a teplotní okna.")
-
-    render_mentor(
-        "Před zachlazením do ležáckého tanku otestuj diacetyl v mikrovlnce: ohřej vzorek na 60 °C na 20 s, zakryj a přičichni. Pokud necítíš teplé máslo, můžeš chladit.",
-        "Předčasné zchlazení uspí kvasinky a diacetyl už v pivu zůstane navždy."
-    )
+                st.warning(f"Získal jsi {score}/2 bodů. Zkontroluj doporučení výše a zkus to znovu.")
 
 # =============================================================================
 # LEKCE 6: LEŽÁKOVÁNÍ & KEG CO2
