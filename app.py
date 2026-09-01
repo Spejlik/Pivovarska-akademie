@@ -436,7 +436,14 @@ elif "3. Rmutování & Enzymy" in selected_view:
     * **Alfa-amyláza (70–75 °C):** Tvorba nezkvasitelných dextrinů $\\rightarrow$ plnost těla a sladovost.
     * **Odrmutování (78 °C):** Zastavení enzymů a snížení viskozity pro scezování.
     """)
+    st.subheader("💡 Jak přesně funguje dekokční rmutování?")
+    st.markdown("""
+    Dekokce nevyužívá přímý ohřev celé nádoby, ale **fyzický přenos tepla a enzymů**:
 
+    1. **Odběr 1/3 hustého díla:** Z hlavní kádě se odebere třetina objemu tvořená převážně sladem. Zbylé 2/3 (řídká sladina plná živých enzymů) čekají v klidu.
+    2. **Povaření rmutu (100 °C):** Odebraný podíl se povaří (15–20 min). Tím se mechanicky rozruší škrobová zrna a vytvoří se typická chlebnatá chuť a barva (melanoidiny).
+    3. **Vyrovnání (návrat do kádě):** Vroucí díl se vrátí zpět do hlavní kádě. Jeho teplota okamžitě zvedne celé dílo na další pauzu, kde enzymy z nevařené části okamžitě zcukří uvolněný škrob.
+    """)
     st.divider()
 
     if "IPA" in zvoleny_styl:
