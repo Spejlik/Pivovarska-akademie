@@ -440,88 +440,151 @@ elif "2. Voda a její úprava" in selected_view:
                 st.warning(f"Máš {body}/2 správně. Prohlédni si doporučení výše a zkus to znovu.")
                 
 # ==========================================
-# LEKCE 3: RMUTOVÁNÍ & ENZYMY (DETAILNÍ)
+# LEKCE 3: RMUTOVÁNÍ & ENZYMY
 # ==========================================
 elif "3. Rmutování & Enzymy" in selected_view:
-    st.header("🔥 Lekce 3: Rmutovací procesy, dekokce a enzymatika")
-    st.info(f"🎯 Výchozí doporučený styl: **{zvoleny_styl}**")
+    st.header("🔥 Lekce 3: Rmutovací procesy a enzymatika")
+    st.info(f"🎯 Vybraný pivní styl: **{zvoleny_styl}**")
 
     st.markdown("""
-    Rmutování je biochemický proces, při kterém sladové enzymy štěpí složité nerozpustné škroby na zkvasitelné cukry a dextriny:
-    * **Beta-amyláza (62–65 °C):** Cukrotvorná pauza. Odštěpuje molekuly maltózy od konců řetězců škrobu $\\rightarrow$ vytváří alkohol a sušší pivo.
-    * **Alfa-amyláza (70–75 °C):** Odcukřovací pauza. Štěpí škrob náhodně uprostřed řetězců na nezkvasitelné dextriny $\\rightarrow$ vytváří plnost, chlebnatost a tělo piva.
-    * **Odrmutování / Mash-out (78 °C):** Teplota, při které se enzymy trvale deaktivují a sníží se viskozita mladiny pro snadné scezování.
+    Rmutování je enzymatická přeměna sladových škrobů:
+    * **Beta-amyláza (62–65 °C):** Tvorba maltózy $\\rightarrow$ vyšší prokvašení a sušší profil.
+    * **Alfa-amyláza (70–75 °C):** Tvorba nezkvasitelných dextrinů $\\rightarrow$ plnost těla a sladovost.
+    * **Odrmutování (78 °C):** Zastavení enzymů a snížení viskozity pro scezování.
     """)
 
     st.divider()
 
-    st.subheader("⚙️ Detailní technologický postup")
-
-    vychozi_idx = 2 if "Pilsner" in zvoleny_styl else (0 if "IPA" in zvoleny_styl else 1)
+    # Nastavení metod podle vybraného stylu
+    if "IPA" in zvoleny_styl:
+        st.subheader("⚙️ Rmutovací technologie pro American IPA / APA")
+        st.warning("💡 **Pravidlo pro IPA:** U amerických piv se dekokce nepoužívá. Cílem je jednoduchá infuze pro dosažení suchého těla, které dá vyniknout chmelu.")
+        dopstupne_metody = [
+            "Jednokroková infuze na vyšší prokvašení (65 °C)",
+            "Dvoukroková infuze s dextrinovou pauzou (64 °C + 71 °C)"
+        ]
+    elif "Pilsner" in zvoleny_styl:
+        st.subheader("⚙️ Rmutovací technologie pro Český ležák")
+        dopstupne_metody = [
+            "Dvourmutová dekokce (Klasický český ležák)",
+            "Jednormutová dekokce (Rychlejší moderní ležák)",
+            "Třírmutová dekokce (Historický tradiční plzeňský postup)"
+        ]
+    elif "Weizen" in zvoleny_styl:
+        st.subheader("⚙️ Rmutovací technologie pro Pšeničné pivo")
+        dopstupne_metody = [
+            "Infuze s ferulovou pauzou (44 °C na hřebíček + 63 °C + 72 °C)",
+            "Jednormutová dekokce pro Weizen"
+        ]
+    else:  # Stout / Porter
+        st.subheader("⚙️ Rmutovací technologie pro Stout / Tmavá piva")
+        dopstupne_metody = [
+            "Jednokroková infuze na plné tělo (67–69 °C)",
+            "Dvourmutová dekokce (pro Tmavý ležák)"
+        ]
 
     metoda = st.radio(
-        "Zvol technologii rmutování k prostudování:",
-        [
-            "Jednokroková / Vícekroková infuze (Anglosaský styl - IPA, Stout)",
-            "Jednormutová dekokce (Moderní světlý ležák / Weizen)",
-            "Dvourmutová dekokce (Klasický český ležák)",
-            "Třírmutová dekokce (Historický tradiční plzeňský postup)"
-        ],
-        index=vychozi_idx
+        "Zvol technologický postup:",
+        dopstupne_metody,
+        key=f"rmut_metoda_{zvoleny_styl}"  # Klíč zajistí automatický reset při změně stylu
     )
 
-    # Technologická data a kroky
+    # Databáze postupů
     postupy_data = {
-        "Jednokroková / Vícekroková infuze (Anglosaský styl - IPA, Stout)": {
+        "Jednokroková infuze na vyšší prokvašení (65 °C)": {
             "casy": [0, 10, 70, 80, 90],
             "teploty": [65, 65, 65, 78, 78],
             "kroky": [
-                "**1. Vystření:** Slad se smíchá s vodou o teplotě cca 71 °C, čímž teplota rmutu ustálí na cílových 65–67 °C.",
-                "**2. Infuzní prodleva (60 min):** Celý objem zůstává v nádobě bez varu. Současně pracují alfa i beta-amylázy.",
-                "**3. Mash-out (78 °C):** Přímý ohřev nebo přilití vroucí vody pro zastavení enzymů a snížení viskozity před scezováním."
+                "**1. Vystření (65 °C):** Slad se rozmíchá ve vodě o teplotě cca 71 °C.",
+                "**2. Hlavní infuzní pauza (60 min):** Teplota 65 °C dává optimální poměr mezi maltózou a dextriny se sušším zakončením.",
+                "**3. Mash-out (78 °C):** Ohřev celé nádoby na 78 °C před scezováním."
             ],
-            "podstata": "Žádná část díla se nevaří. Vhodné pro moderní, vysoce rozluštěné slady. Zachovává světlejší barvu a svěží suchý profil.",
-            "vyhody": "Rychlost (cca 75 min), úspora energie, snadná automatizace v all-in-one hrncích."
+            "vyhody": "Žádné povařování rmutu. Zachovává velmi světlou barvu a lehký profil pro aromatické americké chmely."
         },
-        "Jednormutová dekokce (Moderní světlý ležák / Weizen)": {
-            "casy": [0, 15, 30, 45, 55, 65, 80, 90, 100],
-            "teploty": [52, 52, 63, 63, 100, 72, 72, 78, 78],
+        "Dvoukroková infuze s dextrinovou pauzou (64 °C + 71 °C)": {
+            "casy": [0, 10, 50, 60, 85, 95, 105],
+            "teploty": [64, 64, 71, 71, 71, 78, 78],
             "kroky": [
-                "**1. Vystření na nižší teplotu (52–63 °C):** Slad se rozmíchá s vodou pro zahájení enzymatické činnosti.",
-                "**2. Odběr 1. rmutu (cca 1/3 objemu):** Po ustálení se odebere **hustý podíl** (sedlina se sladem plná škrobů). V hlavní pánvi zůstává řídký podíl s enzymy.",
-                "**3. Povaření rmutu v rmutovací pánvi:** Odebraná 1/3 se zahřeje na 72 °C (pauza 10–15 min na zcukření) a následně se **uvede do varu na 15–20 minut**. Var roztrhá škrobová zrna a vytvoří melanoidiny.",
-                "**4. Zpětné přilití (vyrovnání):** Vroucí rmut se za stálého míchání pomalu přečerpá zpět k řídkému podílu, čímž se celá várka ohřeje přesně na **72 °C** (alfa-amylázová pauza).",
-                "**5. Mash-out:** Ohřev na 78 °C a odčerpání na scezovací stůl/síto."
+                "**1. Vystření (64 °C):** 40 minut na tvorbu zkvasitelných cukrů.",
+                "**2. Přímý ohřev na 71 °C:** 25 minut pro stabilizaci pěny a lehké tělo.",
+                "**3. Odrmutování (78 °C):** 10 minut před scezením."
             ],
-            "podstata": "Spojení rychlosti infuze a plnosti dekokce. Ideální kompromis pro moderní ležácké i pšeničné várky.",
-            "vyhody": "Zvýraznění sladového těla a vyšší výtěžnost bez extrémní časové zátěže."
+            "vyhody": "Přesná kontrola nad suchostí a stabilitou pěny u silnějších piv typu Double IPA."
         },
         "Dvourmutová dekokce (Klasický český ležák)": {
             "casy": [0, 15, 25, 40, 50, 60, 70, 80, 90, 100, 110, 120],
             "teploty": [37, 52, 63, 100, 63, 63, 100, 72, 72, 78, 78, 78],
             "kroky": [
-                "**1. Vystírka (37–52 °C):** Vystření do chladnější vody pro bílkovinnou pauzu a aktivaci fytázy.",
-                "**2. Odběr 1. rmutu (1/3 hustého díla):** Odebere se hustý podíl se zrnem. Ohřeje se na 63 °C (10 min), 72 °C (10 min) a **povaří se 20–30 minut** v rmutovacím kotli. Vystavením varu dojde k intenzivní karamelizaci a tvorbě zlaté barvy.",
-                "**3. První vyrovnání na 63 °C:** Vroucí 1. rmut se vrátí do vystírací pánve k chladnému řídkému podílu. Spojením teplot celá várka vyskočí přesně na **63 °C** (cukrotvorná pauza, 20 min).",
-                "**4. Odběr 2. rmutu (opět 1/3 hustého díla):** Znovu se odebere hustý rmut, ohřeje se rovnou na 72 °C a **povaří 15–20 minut**.",
-                "**5. Druhé vyrovnání na 72 °C:** Povařený 2. rmut se vrátí zpět $\\rightarrow$ teplota celého díla stoupne na **72 °C** (odcukřovací pauza pro plné tělo).",
-                "**6. Odrmutování (78 °C):** Celá várka se dotopí na 78 °C a jde na scezování."
+                "**1. Vystření na 37–52 °C:** Bílkovinná pauza.",
+                "**2. Odběr 1. rmutu (1/3 hustého podílu):** Ohřev na 63 °C, 72 °C a var 20 min v rmutovacím kotli.",
+                "**3. První vyrovnání na 63 °C:** Vroucí rmut se vrátí k řídkému dílu $\\rightarrow$ teplota stoupne na 63 °C.",
+                "**4. Odběr 2. rmutu (1/3 hustého podílu):** Ohřev na 72 °C a var 15 min.",
+                "**5. Druhé vyrovnání na 72 °C:** Návrat povařeného rmutu $\\rightarrow$ ohřev na 72 °C.",
+                "**6. Odrmutování na 78 °C.**"
             ],
-            "podstata": "Srdce českého ležáku. Fyzikální rozrušení buněčných stěn sladového zrna varem a přenos enzymů v řídkém podílu.",
-            "vyhody": "Nezaměnitelný chlebnatý profil, vysoká pěnivost, zlatavá barva a vyvážená pitelnost."
+            "vyhody": "Typická chlebnatost, plnost a tvorba melanoidinů pro zlatavý český ležák."
+        },
+        "Jednormutová dekokce (Rychlejší moderní ležák)": {
+            "casy": [0, 15, 30, 45, 55, 65, 80, 90, 100],
+            "teploty": [52, 52, 63, 63, 100, 72, 72, 78, 78],
+            "kroky": [
+                "**1. Vystření na 52–63 °C.**",
+                "**2. Odběr 1/3 hustého díla:** Povaření 15 minut.",
+                "**3. Vyrovnání na 72 °C:** Návrat vroucího rmutu pro finální zcukření.",
+                "**4. Mash-out (78 °C).**"
+            ],
+            "vyhody": "Zkrácení varného dne při zachování dekokčního charakteru."
         },
         "Třírmutová dekokce (Historický tradiční plzeňský postup)": {
             "casy": [0, 15, 25, 40, 50, 65, 75, 90, 100, 115, 125, 140, 150],
             "teploty": [35, 35, 63, 100, 52, 63, 100, 63, 63, 100, 72, 78, 78],
             "kroky": [
-                "**1. Studená vystírka (35 °C):** Historické namáčení hrubého a málo rozluštěného sladu.",
-                "**2. První rmut (1/3):** Odběr hustého, povaření a návrat $\\rightarrow$ ohřev celého díla na **52 °C** (peptonizační/bílkovinná pauza).",
-                "**3. Druhý rmut (1/3):** Odběr hustého, povaření a návrat $\\rightarrow$ ohřev celého díla na **63 °C** (maltózová pauza).",
-                "**4. Třetí rmut (1/3):** Odběr třetího hustého dílu, povaření a návrat $\\rightarrow$ ohřev celého díla na **72 °C** (dextrinová pauza).",
-                "**5. Mash-out:** Finální zcukření a odrmutování na 78 °C."
+                "**1. Studené vystření (35 °C).**",
+                "**2. Tři po sobě jdoucí odběry a vary rmutů (1/3):** Postupný ohřev na 52 °C, 63 °C a 72 °C.",
+                "**3. Mash-out na 78 °C.**"
             ],
-            "podstata": "Původní plzeňská metoda z roku 1842. Tři samostatné vary umožnily uvařit čiré a perfektně zcukřené pivo i z nedokonale upraveného sladu.",
-            "vyhody": "Extrémní extraktivita a hluboká jantarově-zlatá barva. Dnes téměř nepoužívané kvůli 4–5hodinové délce."
+            "vyhody": "Historická metoda pro málo rozluštěné slady. Maximální extrakt a hluboká barva."
+        },
+        "Infuze s ferulovou pauzou (44 °C na hřebíček + 63 °C + 72 °C)": {
+            "casy": [0, 20, 45, 55, 75, 85, 95],
+            "teploty": [44, 44, 63, 63, 72, 72, 78],
+            "kroky": [
+                "**1. Ferulová pauza (44 °C, 15–20 min):** Uvolnění kyseliny ferulové pro hřebíčkové aroma.",
+                "**2. Maltózová pauza (63 °C, 30 min):** Tvorba cukrů.",
+                "**3. Dextrinová pauza (72 °C, 20 min):** Pěnivost a tělo.",
+                "**4. Mash-out (78 °C).**"
+            ],
+            "vyhody": "Klíčový krok pro autentické aroma bavorského pšeničného piva."
+        },
+        "Jednormutová dekokce pro Weizen": {
+            "casy": [0, 15, 30, 45, 55, 65, 80, 90, 100],
+            "teploty": [44, 44, 63, 63, 100, 72, 72, 78, 78],
+            "kroky": [
+                "**1. Vystření na 44 °C.**",
+                "**2. Odběr 1/3 hustého díla a var 10 min.**",
+                "**3. Vyrovnání na 72 °C a odrmutování na 78 °C.**"
+            ],
+            "vyhody": "Zvýraznění plnosti a rustikálního charakteru pšeničného piva."
+        },
+        "Jednokroková infuze na plné tělo (67–69 °C)": {
+            "casy": [0, 10, 70, 80, 90],
+            "teploty": [68, 68, 68, 78, 78],
+            "kroky": [
+                "**1. Vystření na 68 °C:** Vyšší teplota podporuje alfa-amylázu.",
+                "**2. Infuze (60 min):** Vzniká vyšší podíl nezkvasitelných cukrů pro hutné a krémové tělo Stoutu.",
+                "**3. Mash-out (78 °C).**"
+            ],
+            "vyhody": "Dává plné, sametové tělo vyvažující praženou hořkost černých sladů."
+        },
+        "Dvourmutová dekokce (pro Tmavý ležák)": {
+            "casy": [0, 15, 25, 40, 50, 60, 70, 80, 90, 100, 110, 120],
+            "teploty": [37, 52, 63, 100, 63, 63, 100, 72, 72, 78, 78, 78],
+            "kroky": [
+                "**1. Vystření základních světlých a mnichovských sladů.**",
+                "**2. Dva povařené rmuty pro plné tělo.**",
+                "**3. Tmavé a barvicí slady se přidávají až před scezením**, aby pivo nebylo trpké."
+            ],
+            "vyhody": "Kulatá, jemná sladovost bez drsné spálené pachuti."
         }
     }
 
@@ -531,62 +594,24 @@ elif "3. Rmutování & Enzymy" in selected_view:
     for krok in d["kroky"]:
         st.markdown(krok)
 
-    col_info1, col_info2 = st.columns(2)
-    with col_info1:
-        st.info(f"🔬 **Podstata metody:**\n{d['podstata']}")
-    with col_info2:
-        st.success(f"💎 **Výhody a cíl:**\n{d['vyhody']}")
+    st.success(f"💎 **Charakteristika:** {d['vyhody']}")
 
     # Vykreslení grafu
     import matplotlib.pyplot as plt
 
-    fig, ax = plt.subplots(figsize=(9, 4))
-    ax.plot(d["casy"], d["teploty"], marker='o', color='#E65100', linewidth=2.5, label='Teplota rmutu')
-    ax.set_title(f"Teplotní diagram: {metoda.split('(')[0].strip()}", fontsize=12, fontweight='bold')
-    ax.set_xlabel("Čas od vystření (minuty)")
-    ax.set_ylabel("Teplota díla / rmutu (°C)")
+    fig, ax = plt.subplots(figsize=(9, 3.8))
+    ax.plot(d["casy"], d["teploty"], marker='o', color='#E65100', linewidth=2.5, label='Teplota díla')
+    ax.set_title(f"Teplotní diagram: {metoda.split('(')[0].strip()}", fontsize=11, fontweight='bold')
+    ax.set_xlabel("Čas (minuty)")
+    ax.set_ylabel("Teplota (°C)")
     ax.set_ylim(30, 105)
-    ax.axhline(63, color='#4CAF50', linestyle='--', alpha=0.7, label='Beta-amyláza (63 °C)')
-    ax.axhline(72, color='#2196F3', linestyle='--', alpha=0.7, label='Alfa-amyláza (72 °C)')
-    ax.axhline(100, color='#D32F2F', linestyle=':', alpha=0.7, label='Var rmutu (100 °C)')
+    ax.axhline(63, color='#4CAF50', linestyle='--', alpha=0.6, label='Beta-amyláza (63 °C)')
+    ax.axhline(72, color='#2196F3', linestyle='--', alpha=0.6, label='Alfa-amyláza (72 °C)')
+    if max(d["teploty"]) >= 100:
+        ax.axhline(100, color='#D32F2F', linestyle=':', alpha=0.6, label='Var rmutu (100 °C)')
     ax.legend(loc='lower right', fontsize=8)
     ax.grid(True, linestyle='--', alpha=0.35)
     st.pyplot(fig)
-
-    st.divider()
-
-    # Kvíz
-    st.subheader("📝 Kvíz: Znalosti dekokce a rmutování")
-    with st.form("quiz_rmut_detail"):
-        q1 = st.radio(
-            "Který podíl díla se při dekokci odebírá do rmutovací pánve k povaření?",
-            [
-                "Hustý podíl (sedlina s nerozpuštěným škrobem)",
-                "Řídký podíl (tekutina plná enzymů)",
-                "Pouze čistá voda z povrchu"
-            ]
-        )
-        q2 = st.radio(
-            "Proč se při dekokci nesmí povařit celý objem várky najednou?",
-            [
-                "Došlo by k trvalému zničení (denaturaci) enzymů a škroby by se neměly čím přeměnit na cukry",
-                "Pivo by mělo příliš vysokou hořkost",
-                "Odpařil by se všechen alkohol"
-            ]
-        )
-        sub_rmut = st.form_submit_button("Vyhodnotit znalosti rmutování")
-
-        if sub_rmut:
-            sc = 0
-            if q1 == "Hustý podíl (sedlina s nerozpuštěným škrobem)":
-                sc += 1
-            if q2 == "Došlo by k trvalému zničení (denaturaci) enzymů a škroby by se neměly čím přeměnit na cukry":
-                sc += 1
-
-            if sc == 2:
-                st.success("Excelentní! 2/2 bodů. Zvládáš teorii dekokce jako profesionální sládek 🎉")
-            else:
-                st.warning(f"Získal jsi {sc}/2 bodů. Pročti si kroky odběru rmutu výše a zkus to znovu.")
                 
 # =============================================================================
 # LEKCE 4: SCEZOVÁNÍ & RECIRKULACE
