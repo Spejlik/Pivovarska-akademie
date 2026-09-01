@@ -443,8 +443,15 @@ elif "2. Voda a její úprava" in selected_view:
 # LEKCE 3: RMUTOVÁNÍ & ENZYMY
 # ==========================================
 elif "3. Rmutování & Enzymy" in selected_view:
-    st.header("🔥 Lekce 3: Rmutovací procesy a enzymatika")
-    st.info(f"🎯 Vybraný pivní styl: **{zvoleny_styl}**")
+    # Dynamický nadpis podle stylu
+    if "Pilsner" in zvoleny_styl:
+    st.header("🔥 Lekce 3: Dekokční rmutování a enzymatika")
+    elif "IPA" in zvoleny_styl:
+    st.header("🔥 Lekce 3: Infuzní rmutování a enzymatika")
+    elif "Weizen" in zvoleny_styl:
+    st.header("🔥 Lekce 3: Rmutování pšeničného piva a enzymatika")
+    else:
+    st.header("🔥 Lekce 3: Rmutovací profily pro tmavá piva a enzymatika")
 
     st.markdown("""
     Rmutování je enzymatická přeměna sladových škrobů:
