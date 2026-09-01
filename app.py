@@ -431,18 +431,27 @@ elif "3. Rmutování & Enzymy" in selected_view:
         st.header("🔥 Lekce 3: Rmutovací profily pro tmavá piva a enzymatika")
 
     st.markdown("""
-    Rmutování je enzymatická přeměna sladových škrobů:
-    * **Beta-amyláza (62–65 °C):** Tvorba maltózy $\\rightarrow$ vyšší prokvašení a sušší profil.
-    * **Alfa-amyláza (70–75 °C):** Tvorba nezkvasitelných dextrinů $\\rightarrow$ plnost těla a sladovost.
-    * **Odrmutování (78 °C):** Zastavení enzymů a snížení viskozity pro scezování.
+    Rmutování je řízená přeměna sladového škrobu na zkvasitelné i nezkvasitelné cukry pomocí enzymů:
+    * 🟢 **Beta-amyláza (62–65 °C):** Cukrotvorný enzym – štěpí škrob na **maltózu** (zkvasitelný cukr). Zajišťuje alkohol a sušší charakter piva.
+    * 🔵 **Alfa-amyláza (70–75 °C):** Zcukřovací enzym – tvoří **dextriny** (nezkvasitelné cukry). Dává pivu plné tělo, sladovost a trvanlivou pěnu.
+    * ⚪ **Odrmutování / Mash-out (78 °C):** Trvalé zastavení enzymatické činnosti a zředění viskozity pro bezproblémové scezování.
     """)
-    st.subheader("💡 Jak přesně funguje dekokční rmutování?")
-    st.markdown("""
-    Dekokce nevyužívá přímý ohřev celé nádoby, ale **fyzický přenos tepla a enzymů**:
 
-    1. **Odběr 1/3 hustého díla:** Z hlavní kádě se odebere třetina objemu tvořená převážně sladem. Zbylé 2/3 (řídká sladina plná živých enzymů) čekají v klidu.
-    2. **Povaření rmutu (100 °C):** Odebraný podíl se povaří (15–20 min). Tím se mechanicky rozruší škrobová zrna a vytvoří se typická chlebnatá chuť a barva (melanoidiny).
-    3. **Vyrovnání (návrat do kádě):** Vroucí díl se vrátí zpět do hlavní kádě. Jeho teplota okamžitě zvedne celé dílo na další pauzu, kde enzymy z nevařené části okamžitě zcukří uvolněný škrob.
+    st.subheader("💡 Jak polopatě funguje česká dekokce?")
+    st.markdown("""
+    Při dekokci **neohříváme celý hrnec najednou**, ale teplo přenášíme pomocí povařené části rmutu:
+
+    1. 🥣 **Vystření (výchozí stav, např. 37–52 °C):** Slad smícháme s vodou. Celá várka odpočívá při nízké teplotě.
+    2. 🪣 **Odběr 1/3 hustého rmutu:** Do druhého (rmutovacího) hrnce nabereme **1/3 objemu** (husté zrno). Zbylé **2/3 (řídká sladina plná aktivních enzymů)** zůstávají v hlavní kádi.
+    3. 🔥 **Povaření odebraného rmutu (100 °C na 15–20 min):** 
+       * Odebranou 1/3 pomalu ohřejeme přes 63 °C a 72 °C až k varu.
+       * Var při 100 °C mechanicky rozbije tvrdá škrobová zrna a vytvoří melanoidiny (typickou chlebnatost a zlatavou barvu).
+       * *(Poznámka: Enzymy v této 1/3 se varem zničí, ale škrob je dokonale rozvařený a přístupný).*
+    4. 🔄 **Vyrovnání (návrat vroucího rmutu):** 
+       * Vroucí rmut (100 °C) za stálého míchání pomalu vlijeme zpět k odpočívajícím 2/3 várky.
+       * Fyzikálním smícháním **teplota celé kádě okamžitě skokově stoupne** (např. z 52 °C na 63 °C).
+       * Živé enzymy z nevařené části se okamžitě vrhnou na rozvařený škrob a začnou ho zcukřovat.
+    5. 🔁 **Opakování:** U dvourmutového ležáku se tento proces zopakuje ještě jednou pro skok z 63 °C na 72 °C.
     """)
     st.divider()
 
