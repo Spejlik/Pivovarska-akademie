@@ -248,7 +248,6 @@ menu_items = [
     "👃 7. Senzorika & Pivní vady",
     f"🌾 8. Receptury & Tvorba ({styl_kratky})",
     "📋 9 & 10. Checklist & Várka",
-    "---",
     "📚 Databáze receptů",
     "🧮 Sládkova pokročilá kalkulačka",
     "⏱️ Časovač varného dne"
