@@ -458,7 +458,7 @@ elif "3. Rmutování & Enzymy" in selected_view:
     * **Beta-amyláza (62–65 °C):** Tvorba maltózy $\\rightarrow$ vyšší prokvašení a sušší profil.
     * **Alfa-amyláza (70–75 °C):** Tvorba nezkvasitelných dextrinů $\\rightarrow$ plnost těla a sladovost.
     * **Odrmutování (78 °C):** Zastavení enzymů a snížení viskozity pro scezování.
-    """))
+    """)
 
     st.divider()
 
