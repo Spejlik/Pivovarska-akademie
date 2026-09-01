@@ -1094,7 +1094,22 @@ elif selected_view == "📚 Databáze receptů":
 
         r_hops = f"{chmel_1} ({alfa_1}% alfa) {g1} g – {cas_1} min\n{chmel_2} ({alfa_2}% alfa) {g2} g – {cas_2} min\n{chmel_3} ({alfa_3}% alfa) {g3} g – {cas_3} min"
 
-        r_notes = st.text_area("Poznámky k rmutování / várce", "Infuzní rmutování: 52 °C (15 min), 63 °C (40 min), 72 °C (20 min), mash-out 78 °C.")
+        st.markdown("#### ⚙️ Rmutovací postup")
+
+        RMUTOVACI_SABLONY = {
+            "Jednokroková infuze (IPA / APA / Stout)": "Infuzní rmutování: Vystření na 65 °C (60 min), Mash-out 78 °C (10 min).",
+            "Jednormutová dekokce (Rychlý ležák)": "Jednormutová dekokce: Vystření na 52 °C (15 min), ohřev na 63 °C. Odběr 1/3 rmutu -> 72 °C (15 min) -> var 15 min. Vyrovnání celé varny na 72 °C (20 min). Mash-out 78 °C.",
+            "Dvourmutová dekokce (Klasický český ležák)": "Dvourmutová dekokce:\n1. Vystření na 37–52 °C (15 min).\n2. 1. rmut (1/3): 63 °C (15 min), 72 °C (15 min), var 20 min -> vyrovnání na 63 °C (15 min).\n3. 2. rmut (1/3): 72 °C (15 min), var 15 min -> vyrovnání na 72 °C (20 min).\n4. Mash-out 78 °C.",
+            "Třírmutová dekokce (Tradiční plzeňský postup)": "Třírmutová dekokce:\n1. Studené vystření na 35 °C.\n2. 1. rmut (1/3): 63 °C, 72 °C, var 25 min -> vyrovnání na 52 °C.\n3. 2. rmut (1/3): 63 °C, 72 °C, var 20 min -> vyrovnání na 63 °C.\n4. 3. rmut (1/3): 72 °C, var 15 min -> vyrovnání na 72 °C.\n5. Mash-out 78 °C."
+        }
+
+        volba_rmutu = st.selectbox("Zvolit rmutovací schéma:", list(RMUTOVACI_SABLONY.keys()), key="rec_mash_select")
+
+        r_notes = st.text_area(
+            "Poznámky k rmutování / technologický postup:",
+            value=RMUTOVACI_SABLONY[volba_rmutu],
+            height=120
+        )
 
         if st.button("💾 Uložit recept do databáze"):
             if not r_name.strip():
