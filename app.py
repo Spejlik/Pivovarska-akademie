@@ -620,56 +620,48 @@ elif "3. Rmutování & Enzymy" in selected_view:
     ax.grid(True, linestyle='--', alpha=0.35)
     st.pyplot(fig)
                 
-# =============================================================================
+# ==========================================
 # LEKCE 4: SCEZOVÁNÍ & RECIRKULACE
-# =============================================================================
-elif selected_view == "🪣 4. Scezování & Recirkulace":
-    st.header("Lekce 4: Scezování, tvorba filtračního koláče a recirkulace")
-    st.markdown("""
-    Při scezování nefiltruje samotné nerezové síto, ale **filtrační lůžko ze sladových pluch**.
-    * **Klid na lůžku (10–15 min):** Po odrmutování nech rmut usadit.
-    * **Recirkulace (Vorlauf):** První vytékající zakalenou sladinu jemně vracíme zpět na hladinu, dokud neteče křišťálově čirá.
-    * **Vyslazovací voda ($76–78\,^\circ\text{C}$):** Nesmí přesáhnout $80\,^\circ\text{C}$.
-    """)
+# ==========================================
+elif "4. Scezování & Recirkulace" in selected_view:
+    st.header("🪣 Lekce 4: Scezování, vyslazování a recirkulace")
+    st.info(f"🎯 Specifika filtrace pro styl: **{zvoleny_styl}**")
 
-    if "recirc_sim" not in st.session_state:
-        st.session_state.recirc_sim = 0.0
+    scezovani_data = {
+        "Český světlý ležák (Pilsner)": {
+            "pluchy": "Plzeňský ječmenný slad má ideální podíl pluch, které tvoří přirozené filtrační lože.",
+            "teplota": "Vyslazovací voda musí mít **75–78 °C**. Vyšší teplota (nad 80 °C) vyluhuje třísloviny a křemičitany z pluch.",
+            "postup": "Pomalé vytvoření filtračního koláče, recirkulace prvních kalných podílů mladiny a plynulý odtok.",
+            "varovani": "Nespěchat s odtokem, aby se filtrační koláč nestlačil a neucpal."
+        },
+        "American IPA / APA": {
+            "pluchy": "Vysoký podíl základního ječmenného sladu zajišťuje bezproblémovou filtraci.",
+            "teplota": "Standardní vyslazování při **76–78 °C**.",
+            "postup": "Důraz na čistý přechod do chmelovaru bez přenášení zbytečných kalů, které by kalily chmelové aroma.",
+            "varovani": "Při použití vyššího podílu ovesných/pšeničných vloček pro styl NEIPA může dojít ke zpomalení toku."
+        },
+        "Tmavý ležák / Stout": {
+            "pluchy": "Pražená zrna jsou křehčí a mohou tvořit jemný prach.",
+            "teplota": "Vyslazování při **75–77 °C**.",
+            "postup": "Pokud se pražené slady přidávají až na mash-out/vyslazování pro barvu bez trpkosti, sypou se přímo na horní vrstvu filtračního lože.",
+            "varovani": "Příliš horká voda v závěru může z pražených zrn uvolnit svíravou a drsnou popelavost."
+        },
+        "Německé pšeničné (Weizen)": {
+            "pluchy": "⚠️ **Kritické:** Pšeničný slad **nemá pluchy** a obsahuje hodně bílkovin a glukanů, které tvoří husté těsto.",
+            "teplota": "Striktně držet teplotu mash-outu **78 °C** pro snížení viskozity mladiny.",
+            "postup": "Doporučuje se přidat rýžové slupky (cca 5 % sypání) pro vytvoření umělého filtračního lože.",
+            "varovani": "Nebezpečí ucpání scezovacího síta (Stuck Mash) při rychlém odtoku."
+        }
+    }
 
-    c_s1, c_s2 = st.columns([1, 1])
-    with c_s1:
-        if st.button("🪣 Vrátit 1 litr sladiny na hladinu"):
-            st.session_state.recirc_sim += 1.0
-        if st.button("🔄 Resetovat simulaci"):
-            st.session_state.recirc_sim = 0.0
-
-    with c_s2:
-        val = st.session_state.recirc_sim
-        st.write(f"Recirkulováno: **{val:.1f} litrů**")
-        if val == 0:
-            st.error("Stav: Silně zakalená (moučný kal) 🟤")
-        elif val < 2.0:
-            st.warning("Stav: Mírný zákal 🟠")
-        else:
-            st.success("Stav: Křišťálově čirá sladina ✨🟢 (Lůžko je usazeno)")
-
-    with st.form("form_lekce4"):
-        q = st.radio("Co uděláš, když se scezování zcela zastaví (stuck sparge)?", [
-            "Otevřu kohout naplno",
-            "Zavřu kohout, uvolním podtlak a opatrně nařežu horní vrstvu mláta",
-            "Naleji dovnitř vařící vodu o 100 °C"
-        ])
-        if st.form_submit_button("Odevzdat test"):
-            if "uvolním podtlak" in q:
-                st.success("Správně! Podtlak zhutnil pluchy a je nutné je opatrně proříznout.")
-                st.session_state.kurz["lessons"]["lekce4"]["completed"] = True
-                save_data(st.session_state.kurz)
-            else:
-                st.error("Špatně. Rychlé otevření situaci ještě zhorší.")
-
-    render_mentor(
-        "Při vracení sladiny na hladinu použij děrovanou lžíci, ať proud tekutiny nerozrazí filtrační koláč.",
-        "Nikdy nevyslazuj vodou teplejší než 80 °C. Uvolněné třísloviny způsobí trpkou pachuť."
-    )
+    sc = scezovani_data[zvoleny_styl]
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"🌾 **Filtrační lože:** {sc['pluchy']}")
+        st.markdown(f"🌡️ **Teplota vyslazování:** {sc['teplota']}")
+    with col2:
+        st.markdown(f"⚙️ **Doporučený postup:** {sc['postup']}")
+        st.warning(f"🚨 **Riziko sládka:** {sc['varovani']}")
 
 # ==========================================
 # LEKCE 5: KVAŠENÍ & MANAGEMENT KVASINEK
@@ -765,106 +757,209 @@ elif "5. Kvašení & Diacetyl" in selected_view:
             else:
                 st.warning(f"Získal jsi {score}/2 bodů. Zkontroluj doporučení výše a zkus to znovu.")
 
-# =============================================================================
-# LEKCE 6: LEŽÁKOVÁNÍ & KEG CO2
-# =============================================================================
-elif selected_view == "❄️ 6. Ležákování & KEG CO₂":
-    st.header("Lekce 6: Ležákování v chladu a nasycení v KEGu")
-    st.markdown("""
-    * **Teplota ležákování ($1–3\,^\circ\text{C}$):** Usnadňuje vysrážení chladového zákalu (*chill haze*) a sedimentaci zbytkových kvasinek.
-    * **Délka zrání:** Pravidlo sládků: **1 týden na každý 1 stupeň Plato** (11° ležák = 4–5 týdnů).
-    * **Henryho zákon sycení:** V chladnějším pivu se $CO_2$ rozpouští výrazně ochotněji.
-    """)
+# ==========================================
+# LEKCE 6: ZRÁNÍ & NASYCENÍ V KEGU
+# ==========================================
+elif "6. Ležákování & KEG" in selected_view:
+    if "Pilsner" in zvoleny_styl or "Tmavý ležák" in zvoleny_styl:
+        st.header("❄️ Lekce 6: Ležákování v chladu a nasycení v KEGu")
+    else:
+        st.header("❄️ Lekce 6: Zrání piva, Cold Crash a nasycení v KEGu")
+        
+    st.info(f"🎯 Profil zrání a sycení pro styl: **{zvoleny_styl}**")
 
-    with st.form("form_lekce6"):
-        q = st.radio("Proč před plněním Corny KEGu vytěsňujeme vzduch plynem CO₂?", [
-            "Abychom sud ochladili",
-            "Abychom zabránili oxidaci piva (chuti po mokrém kartonu)",
-            "Aby se zvýšila pěnivost mladiny"
-        ])
+    lezak_data = {
+        "Český světlý ležák (Pilsner)": {
+            "teplota": "1–3 °C (sklepní zrání)",
+            "doba": "Minimálně **4–6 týdnů** (pravidlo: 1 týden na každý 1° Plato).",
+            "syceni": "Střední nasycení: **2.3–2.5 objemu CO₂** (tlak cca 0.8–1.0 bar při 4 °C).",
+            "cisteni": "Pomalé přirozené sedimentování kvasnic a vysrážení chladového zákalu (*chill haze*)."
+        },
+        "American IPA / APA": {
+            "teplota": "Cold Crash: 2–4 °C (krátce na 2–3 dny před stáčením)",
+            "doba": "**Krátká (1–2 týdny)**. Pivo se pije čerstvé, chmelové aroma s časem rychle degraduje!",
+            "syceni": "Vyšší říz: **2.4–2.7 objemu CO₂** pro podporu uvolňování chmelových silic.",
+            "cisteni": "Rychlé vyčeření chmelových pelet po studeném chmelení (Dry Hop)."
+        },
+        "Tmavý ležák / Stout": {
+            "teplota": "Ležák 1–3 °C / Stout 10–12 °C",
+            "doba": "**4–8 týdnů**. Tmavé pražené tóny potřebují čas na zakulacení a zjemnění.",
+            "syceni": "U Stoutu spíše nižší nasycení: **1.8–2.2 objemu CO₂** pro krémovost (případně směs N₂/CO₂).",
+            "cisteni": "Přirozené zrání, zákal není díky tmavé barvě patrný."
+        },
+        "Německé pšeničné (Weizen)": {
+            "teplota": "10–12 °C (nechladit na bod mrazu, aby nevymizely kvasinky)",
+            "doba": "**2–3 týdny**. Pije se velmi mladé a svěží.",
+            "syceni": "Vysoké nasycení: **2.8–3.3 objemu CO₂** (tlak cca 1.4–1.6 bar při 6 °C) – typický vysoký říz a pěna.",
+            "cisteni": "Zákal tvořený kvasinkami a bílkovinami je **žádoucí**."
+        }
+    }
+
+    lz = lezak_data[zvoleny_styl]
+    col_l1, col_l2 = st.columns(2)
+    with col_l1:
+        st.markdown(f"🌡️ **Teplotní režim:** {lz['teplota']}")
+        st.markdown(f"⏳ **Délka zrání:** {lz['doba']}")
+    with col_l2:
+        st.markdown(f"🫧 **Cílové nasycení CO₂:** {lz['syceni']}")
+        st.markdown(f"✨ **Čistota a stabilita:** {lz['cisteni']}")
+
+    st.divider()
+    st.subheader("📝 Kvíz: Správa CO₂ v KEGu")
+    with st.form("quiz_keg"):
+        q_keg = st.radio(
+            "Proč před plněním Corny KEGu vytěsňujeme vzduch plynem CO₂ (sanitace plynem)?",
+            [
+                "Abychom sud ochladili",
+                "Abychom zabránili oxidaci piva (chuti po mokrém kartonu a degradaci chmelu)",
+                "Aby se zvýšila pěnivost mladiny"
+            ]
+        )
         if st.form_submit_button("Odevzdat test"):
-            if "oxidaci" in q:
-                st.success("Přesně tak! Kyslík je po ukončení kvašení největším nepřítelem piva.")
-                st.session_state.kurz["lessons"]["lekce6"]["completed"] = True
-                save_data(st.session_state.kurz)
+            if q_keg == "Abychom zabránili oxidaci piva (chuti po mokrém kartonu a degradaci chmelu)":
+                st.success("Správně! Kyslík je největší nepřítel hotového piva 🎉")
             else:
-                st.error("Chyba. Hlavním důvodem je ochrana před vzdušným kyslíkem.")
+                st.warning("Zkus to znovu. Klíčem je ochrana před vzdušným kyslíkem.")
 
-    render_mentor(
-        "Při narážení a čepování udržuj stejnou teplotu sudu i vedení. Zabráníš tím uvolňování bublinek CO₂ v hadici a pěnění na pípě.",
-        "Nikdy nasyť pivo divokým třesením pod 3 bary bez kontroly, jinak budeš točit jen pěnu."
-    )
+# ==========================================
+# LEKCE 7: SENZORIKA & VADY
+# ==========================================
+elif "7. Senzorika & Pivní vady" in selected_view:
+    st.header("👃 Lekce 7: Senzorika piva a pivní vady (Off-flavors)")
+    st.info(f"🎯 Senzorický profil a typická úskalí pro styl: **{zvoleny_styl}**")
 
-# =============================================================================
-# LEKCE 7: SENZORIKA & PIVNÍ VADY
-# =============================================================================
-elif selected_view == "👃 7. Senzorika & Pivní vady":
-    st.header("Lekce 7: Senzorika piva & Rozpoznávání pivních vad (Off-flavors)")
-    st.markdown("*Identifikace nejčastějších technologických vad a jejich původ.*")
-    
-    col_v1, col_v2 = st.columns(2)
-    with col_v1:
-        st.markdown("""
-        * **🧈 Diacetyl:** Chuť másla, popcornu. *Původ: Nízký pitching rate, předčasné zachlazení.*
-        * **🌽 DMS:** Vařená kukuřice, sterilovaný hrášek. *Původ: Slabý var se zakrytou poklicí, pomalé chlazení.*
-        """)
-    with col_v2:
-        st.markdown("""
-        * **📦 Oxidace:** Mokrý karton, zatuchlý sklep, těžký med. *Původ: Kontakt se vzduchem při stáčení.*
-        * **🍏 Acetaldehyd:** Zelené nakyslé jablko, tráva. *Původ: Nedokvašené mladé pivo.*
-        """)
+    senzorika_data = {
+        "Český světlý ležák (Pilsner)": {
+            "vady": [
+                "🧈 **Diacetyl:** Máslová příchuť. V ležáku je povolena jen nepatrná stopa, nesmí dominovat.",
+                "🌽 **DMS (Dimetylsulfid):** Vařená kukuřice či zelenina. Vzniká slabým chmelovarem nebo pomalým chlazením.",
+                "📦 **Oxidace:** Chuť mokrého kartonu či medu způsobená stykem se vzduchem."
+            ],
+            "otazka": "Co je hlavní příčinou vzniku DMS (kukuřičné příchuti) v ležáku?",
+            "moznosti": [
+                "Slabý chmelovar se zakrytou poklicí bez odparu a pomalé chlazení mladiny",
+                "Kvašení při příliš nízké teplotě",
+                "Příliš mnoho českého chmele"
+            ],
+            "spravne": "Slabý chmelovar se zakrytou poklicí bez odparu a pomalé chlazení mladiny"
+        },
+        "American IPA / APA": {
+            "vady": [
+                "📦 **Oxidace:** Extrémní nepřítel IPA. Způsobuje zhnědnutí barvy a ztrátu svěžího ovocného aroma.",
+                "🦨 **Světelná vada (Lightstruck):** Zápach po skunkovi při kontaktu chmelových iso-alfa kyselin se světlem.",
+                "🌿 **Travnatost / Trpkost:** Příliš dlouhé studené chmelení (nad 4–5 dní) nebo vyluhování pelet."
+            ],
+            "otazka": "Jak se projeví oxidace u moderní chmelené IPA?",
+            "moznosti": [
+                "Ztmavnutím barvy a ztrátou citrusového/tropického aroma na úkor chuti po kartonu",
+                "Zvýšením kvasné teploty",
+                "Okamžitým zkysnutím piva na ocet"
+            ],
+            "spravne": "Ztmavnutím barvy a ztrátou citrusového/tropického aroma na úkor chuti po kartonu"
+        },
+        "Tmavý ležák / Stout": {
+            "vady": [
+                "🔥 **Spálená hořkost / Popel:** Nesprávné rmutování tmavých sladů.",
+                "🍏 **Acetaldehyd:** Chuť zelených jablek z nedokvašeného piva.",
+                "🧀 **Kyselina isovalerová:** Zápach po starém sýru ze zkaženého starého chmele."
+            ],
+            "otazka": "Čím vzniká nepřirozeně drsná a spálená svíravost u Stoutu?",
+            "moznosti": [
+                "Příliš dlouhým varem a vyluhováním jemně mletých černých sladů v kyselém prostředí",
+                "Použitím kvasnic S-04",
+                "Nízkým obsahem alkoholu"
+            ],
+            "spravne": "Příliš dlouhým varem a vyluhováním jemně mletých černých sladů v kyselém prostředí"
+        },
+        "Německé pšeničné (Weizen)": {
+            "vady": [
+                "💊 **Medicínská chuť (Chlorfenoly):** Vzniká reakcí chloru z vody s kvasinkami.",
+                "🧀 **Tukové/Mýdlové tóny:** Stárnutí kvasinek v lahvi.",
+                "💡 **Poznámka k pšenici:** Výrazný banán (isoamyl acetát) a hřebíček (4-VG) zde **nejsou vadou**, ale žádaným stylem!"
+            ],
+            "otazka": "Která z těchto vůní je u pravého pšeničného piva (Weizen) ŽÁDOUCÍ?",
+            "moznosti": [
+                "Banány (estery) a hřebíček (fenoly)",
+                "Vařená kukuřice a zelenina (DMS)",
+                "Mokrý karton (oxidace)"
+            ],
+            "spravne": "Banány (estery) a hřebíček (fenoly)"
+        }
+    }
 
-    with st.form("form_lekce7"):
-        q = st.radio("Co je hlavní příčinou vzniku DMS (kukuřičné příchuti) v ležáku?", [
-            "Slabý chmelovar se zakrytou poklicí bez možnosti odparu a pomalé chlazení",
-            "Kvašení při příliš nízké teplotě",
-            "Příliš mnoho žateckého chmele"
-        ])
+    sn = senzorika_data[zvoleny_styl]
+    for vada in sn["vady"]:
+        st.markdown(vada)
+
+    st.divider()
+    st.subheader(f"📝 Kvíz: Senzorika pro {zvoleny_styl}")
+    with st.form("quiz_vady"):
+        q_vada = st.radio(sn["otazka"], sn["moznosti"])
         if st.form_submit_button("Vyhodnotit test"):
-            if "Slabý chmelovar" in q:
-                st.success("Správně! Prekurzor DMS se musí intenzivním varem odpařit.")
-                st.session_state.kurz["lessons"]["lekce7"]["completed"] = True
-                save_data(st.session_state.kurz)
+            if q_vada == sn["spravne"]:
+                st.success("Výborně! Správná odpověď 🎉")
             else:
-                st.error("Chyba. DMS vzniká tepelným rozkladem SMM bez dostatečného odparu páry.")
+                st.warning("Špatná odpověď, pročti si vady výše a zkus to znovu.")
 
-    render_mentor(
-        "Referenční vzorky si vyrobíš doma: kapka máslového aroma do piva = diacetyl, kapka nálevu z kukuřice = DMS.",
-        "Pivo na senzoriku degustuj při 8–10 °C. Příliš ledové pivo vady spolehlivě zamaskuje!"
-    )
+# ==========================================
+# LEKCE 8: RECEPTURY & TVORBA PIVA
+# ==========================================
+elif "8. Receptury & Tvorba" in selected_view:
+    st.header(f"📜 Lekce 8: Stavba receptury – {zvoleny_styl}")
+    st.info(f"🎯 Normy a poměry surovin pro styl: **{zvoleny_styl}**")
 
-# =============================================================================
-# LEKCE 8: RECEPTURY & TVORBA LEŽÁKU
-# =============================================================================
-elif selected_view == "🌾 8. Receptury & Tvorba ležáku":
-    st.header("Lekce 8: Receptury a tvorba tradičního ležáku")
-    st.markdown("""
-    * **Základ sypání (95–100 %):** Český plzeňský slad.
-    * **Doplňkové slady (0–5 %):** Mnichovský slad (pro chlebovost a barvu) nebo Carapils (pěna).
-    * **Chmelový rozvrh (3 dávky ŽPČ):**
-      * 1. dávka (75–90 min) = 65 % IBU (hořkost)
-      * 2. dávka (25 min) = 25 % IBU (chuť)
-      * 3. dávka (5 min / whirlpool) = 10 % IBU (aroma)
-    """)
+    recept_data = {
+        "Český světlý ležák (Pilsner)": {
+            "sypani": "* **Základ (95–100 %):** Český plzeňský slad\n* **Doplňky (0–5 %):** Mnichovský slad nebo Carapils",
+            "chmeleni": "* **1. dávka (60–90 min):** 60 % IBU (hořkost – např. Premiant/ŽPČ)\n* **2. dávka (20–30 min):** 30 % IBU (chuť – ŽPČ)\n* **3. dávka (0–5 min / whirlpool):** 10 % IBU (aroma – ŽPČ)",
+            "bugu": "**0.70 až 0.85** (harmonická, vyšší pitelná hořkost)",
+            "otazka": "Jaký poměr BU:GU (hořkost ku hustotě mladiny) je typický pro poctivý český ležák?",
+            "moznosti": ["0.10 až 0.20 (téměř bez hořkosti)", "0.70 až 0.85 (střední až vyšší harmonická hořkost)", "1.50 až 2.00 (extrémní hořkost)"],
+            "spravne": "0.70 až 0.85 (střední až vyšší harmonická hořkost)"
+        },
+        "American IPA / APA": {
+            "sypani": "* **Základ (85–90 %):** Pale Ale slad\n* **Doplňky (10–15 %):** Pšeničný slad, Caramalt / Munich",
+            "chmeleni": "* **1. dávka (60 min):** 25 % IBU (čistá hořkost – Magnum/Warrior)\n* **2. dávka (Whirlpool 80 °C):** 40 % IBU + masivní aroma (Citra, Mosaic)\n* **3. dávka (Dry Hop 3 dny):** 0 IBU, čisté silice",
+            "bugu": "**0.85 až 1.20** (výrazná, suchá a čistá hořkost)",
+            "otazka": "Kde vzniká největší část ovocného aromatu u moderní IPA?",
+            "moznosti": ["Při varu v prvních 10 minutách", "Ve whirlpoolu při 80 °C a při studeném chmelení (Dry Hopping)", "Z praženého sladu"],
+            "spravne": "Ve whirlpoolu při 80 °C a při studeném chmelení (Dry Hopping)"
+        },
+        "Tmavý ležák / Stout": {
+            "sypani": "* **Základ (70–80 %):** Plzeňský / Pale Ale slad + Mnichovský\n* **Pražené a karamelové slady (15–20 %):** Carafa, Pražený ječmen, Čokoládový slad",
+            "chmeleni": "* **1. dávka (60 min):** 80 % IBU (neutrální hořkost)\n* **2. dávka (15 min):** 20 % IBU pro vyvážení sladkosti",
+            "bugu": "**0.50 až 0.75** (hořkost je doplněna praženými slady)",
+            "otazka": "Proč se u stoutů a tmavých piv používá spíše neutrální chmel?",
+            "moznosti": ["Aby nepřebíjel kávové a čokoládové aroma pražených sladů", "Protože aromatický chmel v tmavém pivu nefunguje", "Aby pivo nemělo pěnu"],
+            "spravne": "Aby nepřebíjel kávové a čokoládové aroma pražených sladů"
+        },
+        "Německé pšeničné (Weizen)": {
+            "sypani": "* **Základ (50–70 %):** Pšeničný slad světlý\n* **Doplněk (30–50 %):** Plzeňský slad",
+            "chmeleni": "* **1. dávka (60 min):** 90 % IBU (jemný německý chmel na nízkých 12–15 IBU)\n* **Pozdní chmelení:** Pouze minimální nebo žádné",
+            "bugu": "**0.25 až 0.35** (velmi nízká hořkost, v chuti dominují kvasinky)",
+            "otazka": "Jaká je typická hodnota hořkosti (IBU) u klasického pšeničného piva (Weizen)?",
+            "moznosti": ["Extrémní (50–70 IBU)", "Velmi nízká a jemná (10–15 IBU)", "Nulová"],
+            "spravne": "Velmi nízká a jemná (10–15 IBU)"
+        }
+    }
 
-    with st.form("form_lekce8"):
-        q = st.radio("Jaký poměr BU:GU (hořkost ku hustotě) je typický pro dobře vyvážený český ležák?", [
-            "0.10 až 0.20 (téměř bez hořkosti)",
-            "0.70 až 0.85 (střední až vyšší harmonická hořkost)",
-            "1.50 až 2.00 (extrémní IPA)"
-        ])
+    rc = recept_data[zvoleny_styl]
+    col_r1, col_r2 = st.columns(2)
+    with col_r1:
+        st.markdown(f"🌾 **Skladba sypání:**\n{rc['sypani']}")
+        st.markdown(f"⚖️ **Poměr hořkosti a hustoty (BU:GU):** `{rc['bugu']}`")
+    with col_r2:
+        st.markdown(f"🌿 **Rozvrh chmelení:**\n{rc['chmeleni']}")
+
+    st.divider()
+    st.subheader("📝 Kvíz: Stavba receptury")
+    with st.form("quiz_recept"):
+        q_rec = st.radio(rc["otazka"], rc["moznosti"])
         if st.form_submit_button("Odevzdat"):
-            if "0.70 až 0.85" in q:
-                st.success("Správně! Český ležák vyžaduje poctivou pevnou hořkost vyvažující sladové tělo.")
-                st.session_state.kurz["lessons"]["lekce8"]["completed"] = True
-                save_data(st.session_state.kurz)
+            if q_rec == rc["spravne"]:
+                st.success("Správně! Recepturu máš v malíku 🎉")
             else:
-                st.error("Nesprávně. Správné rozmezí pro český styl je 0.70–0.85.")
-
-    render_mentor(
-        "Nepřeplňuj recept speciálními slady. Tradiční ležák staví na kráse jednoduchosti a kvalitě plzeňského sladu.",
-        "Při použití výhradně žateckého červeňáku počítej s velkým množstvím chmelového kalu. Dobrý whirlpool je zásadní."
-    )
+                st.warning("Zkus to znovu podle parametrů výše.")
 
 # =============================================================================
 # LEKCE 9 & 10: CHECKLIST & ZÁVĚREČNÁ VÁRKA
