@@ -672,11 +672,11 @@ elif "5. Kvašení & Diacetyl" in selected_view:
     
     kvaseni_data = {
         "Český světlý ležák (Pilsner)": {
-            "typ": "Spodní kvašení (*Saccharomyces pastorianus*, např. W-34/70)",
-            "teplota": "9–11 °C",
-            "pitching": "**1.5 milionu buněk / ml / °P** (cca **2 balíčky** sušených kvasinek 11.5 g na 20 l $12^\circ$ mladiny). Chladné prostředí vyžaduje vysokou dávku kvasinek pro rychlý start.",
-            "diacetyl": "**Zásadní:** Zvýšení teploty na 13–15 °C ve chvíli, kdy zbývá dokvasit posledních 20–25 % cukrů (cca při $3.5^\circ\text{P}$), aby kvasinky odbouraly máslový diacetyl.",
-            "specifika": "Pomalé kvašení (10–14 dní). Klíčová je stabilní teplota a minimum kyslíku při stáčení do ležáckých nádob.",
+            "typ": "Spodní kvašení (*Saccharomyces pastorianus*, např. pivovarské husté kvasnice / W-34/70)",
+            "teplota": "7–10 °C (Čerstvé husté kvasnice z pivovaru kvasí čistě už od 7 °C; sušené kmeny vyžadují cca 9–11 °C)",
+            "pitching": "**1.5–2.0 milionu buněk / ml / °P** (cca 0.5–1 litr hustých pivovarských kvasnic nebo minimálně 2 balíčky sušených na 20 l mladiny).",
+            "diacetyl": "**Diacetylová pauza:** Na konci kvašení (při cca 3–3.5 °P) nechat teplotu vystoupat na 12–14 °C pro spolehlivé odbourání máslového diacetylu.",
+            "specifika": "Při 7 °C trvá hlavní kvašení 10–14 dní. Výsledkem je křišťálově čistý chuťový profil bez cizích pachutí.",
             "q1_q": "Kolik balíčků suchých kvasinek (11.5 g) je potřeba pro 20 litrů 12° ležáku?",
             "q1_opts": ["Pouze 1/2 balíčku", "1 balíček", "Minimálně 2 balíčky (pro ležácký pitching rate)"],
             "q1_ans": "Minimálně 2 balíčky (pro ležácký pitching rate)",
