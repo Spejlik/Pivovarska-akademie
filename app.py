@@ -278,7 +278,7 @@ if selected_view == "📘 1. Základy & Suroviny":
 # ==========================================
 # LEKCE 2: VODA A JEJÍ ÚPRAVA
 # ==========================================
-elif sekce == "🚰 Lekce 2: Voda a její úprava":
+elif selected_view == "🚰 Lekce 2: Voda a její úprava":
     st.header("Lekce 2: Voda a její chemická úprava podle pivního stylu")
     
     # Výběr pivního stylu
