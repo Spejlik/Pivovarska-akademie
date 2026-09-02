@@ -234,15 +234,6 @@ else:
         st.rerun()
     st.sidebar.divider()
 
-else:
-    st.sidebar.success(f"👤 Přihlášen: **{st.session_state.user_email}**")
-    if st.sidebar.button("Odhlásit se"):
-        st.session_state.user_id = None
-        st.session_state.user_email = None
-        st.session_state.kurz = DEFAULT_STATE
-        st.rerun()
-    st.sidebar.divider()
-
 st.session_state.mentor_mode = st.sidebar.toggle("👨‍🏫 Mentorský režim", value=st.session_state.mentor_mode)
 
 completed_count = sum(1 for l in st.session_state.kurz["lessons"].values() if l.get("completed", False))
