@@ -57,6 +57,12 @@ DEFAULT_STATE = {
     "recipes": []
 }
 
+
+def fb_reset_password(email):
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={FIREBASE_WEB_API_KEY}"
+    res = requests.post(url, json={"requestType": "PASSWORD_RESET", "email": email})
+    return res.json()
+
 def fb_sign_in(email, password):
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_WEB_API_KEY}"
     res = requests.post(url, json={"email": email, "password": password, "returnSecureToken": True})
@@ -165,7 +171,7 @@ st.sidebar.title("🍺 Pivovarská akademie")
 
 if st.session_state.user_id is None:
     st.sidebar.markdown("### 👤 Přihlášení k účtu")
-    tab_log, tab_reg = st.sidebar.tabs(["Přihlásit se", "Registrace"])
+    tab_log, tab_reg, tab_reset = st.sidebar.tabs(["Přihlásit se", "Registrace", "Obnova hesla"])
     
     with tab_log:
         with st.form("form_auth_login"):
@@ -198,8 +204,35 @@ if st.session_state.user_id is None:
                     msg = res.get("error", {}).get("message", "Chyba registrace.")
                     st.error(f"Chyba: {msg}")
 
+    with tab_reset:
+        with st.form("form_auth_reset"):
+            st.caption("Zadej e-mail, na který ti zašleme odkaz pro vytvoření nového hesla.")
+            rst_email = st.text_input("E-mail pro obnovu")
+            if st.form_submit_button("Odeslat odkaz"):
+                if rst_email:
+                    res = fb_reset_password(rst_email)
+                    if "error" in res:
+                        err_msg = res["error"].get("message", "Neznámá chyba.")
+                        if "EMAIL_NOT_FOUND" in err_msg:
+                            st.error("Tento e-mail není zaregistrován.")
+                        else:
+                            st.error(f"Chyba: {err_msg}")
+                    else:
+                        st.success("Odkaz byl odeslán na tvůj e-mail!")
+                else:
+                    st.warning("Vyplň prosím e-mailovou adresu.")
+
     st.info("👈 Pro ukládání receptů a postupu v kurzu se přihlas nebo zaregistruj v levém menu.")
     st.divider()
+
+else:
+    st.sidebar.success(f"👤 Přihlášen: **{st.session_state.user_email}**")
+    if st.sidebar.button("Odhlásit se"):
+        st.session_state.user_id = None
+        st.session_state.user_email = None
+        st.session_state.kurz = DEFAULT_STATE
+        st.rerun()
+    st.sidebar.divider()
 
 else:
     st.sidebar.success(f"👤 Přihlášen: **{st.session_state.user_email}**")
